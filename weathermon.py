@@ -2,6 +2,7 @@
 """ The main weathermon program """
 
 import time
+import json
 import lib.conversions as conv
 from lib.mqtt import Mqtt
 from lib.ad import ADS1015
@@ -9,39 +10,132 @@ from lib.shtc3 import SHTC3
 from lib.lps22hb import LPS22HB
 from lib.anemometer import Anemometer
 from lib.dht11 import DHT11
+from lib.influxdb import Influxdb
+
+db = Influxdb(host='rpi4b-1', port='8086')
+client = db.client()
+
+mq_topic = 'sun-chaser/testing'
+
+def setup_db(client):
+    client.create_database('sensors_test')
+    client.create_retention_policy('oneday', '1d', '1', database='sensors_test')
+    client.create_retention_policy('onemonth', '30d', '1', database='sensors_test')
+
+def get_pressure(sensor):
+    reading = {}
+    pr = sensor.pressure()
+    adjusted_pr = conv.adjust_for_altitude(pr)
+
+    reading['measurement'] = 'weathermon'
+    reading['tags'] = {'sensorName': 'LPS22HB', 'sensorLocation': 'Ourhouse'}
+    reading['fields'] = {
+        'raw_hpa': pr,
+        'raw_inhg': conv.hpa_to_inhg(pr),
+        'adjusted_hpa': adjusted_pr,
+        'adjusted_inhg': conv.hpa_to_inhg(adjusted_pr),
+        'pressure': round(conv.hpa_to_inhg(adjusted_pr),2)
+    }
+
+    return reading
+
+def get_temperature_and_humidity(sensor, name):
+    reading = {}
+    humid, temp = sensor.readings()
+
+    reading['measurement'] = 'weathermon'
+    reading['tags'] = {'sensorName': name, 'sensorLocation': 'Ourhouse'}
+    reading['fields'] = {
+        'tempc': temp,
+        'tempf': round(conv.c_to_f(temp), 2),
+        'humidity': round(humid, 2)
+    }
+
+    return reading
+
+def get_wind(an, dr):
+    reading = {}
+    windspeed = an.windspeed()
+    d_text,d_value = dr.direction()
+    gust = an.gust()
+
+    reading['measurement'] = 'weathermon'
+    reading['tags'] = {'sensorName': 'Anemometer', 'sensorLocation': 'Ourhouse'}
+    reading['fields'] = {
+        'windspeed': windspeed,
+        'gust': gust,
+        'dir_text': d_text,
+        'dir_value': d_value
+    }
+
+    return reading
+
+def get_average(readings):
+    avg = 0
+    if len(readings) > 0:
+        avg = sum(readings) / len(readings)
+    return avg
 
 def main():
+    delay = 10
+    retain = 600
     th = SHTC3()
     pr = LPS22HB()
     an = Anemometer(5)
     dr = ADS1015()
     dh = DHT11(23)
+    mq = Mqtt('192.168.1.10')
 
+    setup_db(client)
     an.start()
+    loop_count = 0
+    wind_avg = []
 
     while True:
-        pressure = conv.hpa_to_inhg(conv.adjust_for_altitude(pr.pressure()))
-        temp1 = pr.temperature()
-        temp2 = th.temperature()
-        humidity = th.humidity()
-        dh_humid, dh_temp = dh.readings()
-        windspeed = an.windspeed()
-        d_text,d_value = dr.direction()
-        gust = an.gust()
+        loop_count += 1
+        data = []
+
+        pressure = get_pressure(pr)
+        data.append(pressure)
+
+        temp_hum = get_temperature_and_humidity(th, 'SHTC3')
+        data.append(temp_hum)
+
+        # We must stop the anemometer while reading DHT11
+        # or really bad things happen
+        an.stop()
+        time.sleep(0.05)
+        dh_temp_hum = get_temperature_and_humidity(dh, 'DHT11')
+        data.append(dh_temp_hum)
+
+        an.start()
+
+        wind = get_wind(an, dr)
+        data.append(wind)
+        wind_avg.append(wind['fields']['windspeed'])
+
+        client.write_points(data, database='sensors_test', retention_policy='oneday')
+        mq.send(mq_topic, json.dumps(data))
+
+        if loop_count >= retain / delay:
+            data[-1]['fields']['windspeed'] = get_average(wind_avg)
+            client.write_points(data, database='sensors_test', retention_policy='onemonth')
+            an.reset_gust()
+            wind_avg = []
+            loop_count = 0
 
         print("---[{}]---".format(time.asctime()))
-        print("Pressure     : {:.2f}".format(pressure))
-        print("Temperature1 : {:.2f}".format(conv.c_to_f(temp1)))
-        print("Temperature2 : {:.2f}".format(conv.c_to_f(temp2)))
-        print("DHT Temp     : {:.2f}".format(conv.c_to_f(dh_temp)))
-        print("Humidity     : {:.2f} %".format(humidity))
-        print("DHT Humidity : {:.2f} %".format(dh_humid))
-        print("Wind Speed   : {:.2f} Mph".format(windspeed))
-        print("Max Gust     : {:.2f} Mph".format(gust))
-        print("Wind Dir     : {} | {}".format(d_text, d_value))
+        print("Pressure     : {:.2f}".format(pressure['fields']['pressure']))
+        print("Temperature  : {:.2f}".format(temp_hum['fields']['tempf']))
+        print("DHT Temp     : {:.2f}".format(dh_temp_hum['fields']['tempf']))
+        print("Humidity     : {:.2f} %".format(temp_hum['fields']['humidity']))
+        print("DHT Humidity : {:.2f} %".format(dh_temp_hum['fields']['humidity']))
+        print("Avg WindSpeed: {:.2f} Mph".format(get_average(wind_avg)))
+        print("Wind Speed   : {:.2f} Mph".format(wind['fields']['windspeed']))
+        print("Max Gust     : {:.2f} Mph".format(wind['fields']['gust']))
+        print("Wind Dir     : {} | {}".format(wind['fields']['dir_text'], wind['fields']['dir_value']))
         print("-----------------------------\n")
-        time.sleep(5)
-    pass
+        time.sleep(delay)
 
 if __name__ == "__main__":
     main()

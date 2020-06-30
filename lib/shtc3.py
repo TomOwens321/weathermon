@@ -22,6 +22,8 @@ class SHTC3(object):
         humidity.argtypes = [ctypes.c_void_p]
         return humidity(None)
 
+    def readings(self):
+        return (self.humidity(), self.temperature())
 
 if __name__ == "__main__":
     shtc3 = SHTC3()

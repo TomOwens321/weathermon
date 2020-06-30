@@ -10,7 +10,7 @@ class Mqtt(object):
     def send(self, topic, payload):
         try:
             self.client.connect(self.host)
+            self.client.publish(topic, payload)
             self.client.disconnect()
         except:
             print("MQTT connection error with {}".format(self.host))
-
