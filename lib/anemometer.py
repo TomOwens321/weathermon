@@ -3,11 +3,13 @@ import time
 import RPi.GPIO as GPIO
 
 class Anemometer():
-    
+
     WIND_FACTOR = 1.492
 
     def __init__(self, pin=25):
         self.anemometer_pin = pin
+        self.pulse_count = 0
+        self.last_reading_time = time.time()
         self.last_time = 0
         self.delta = 0
         self.gust_delta = 0xffff
@@ -24,6 +26,7 @@ class Anemometer():
         if self.delta < self.gust_delta:
             self.gust_delta = self.delta
         self.last_time = now_time
+        self.pulse_count += 1
         # print("Anemometer trigger event")
 
     def start(self):
@@ -33,6 +36,14 @@ class Anemometer():
         GPIO.remove_event_detect(self.anemometer_pin)
 
     def windspeed(self):
+        now_time = time.time()
+        time_delta = now_time - self.last_reading_time
+        mph = (self.pulse_count / time_delta) * self.WIND_FACTOR
+        self.pulse_count = 0
+        self.last_reading_time = now_time
+        return mph
+
+    def instant_windspeed(self):
         mph = 0.0
         if self.delta > 5:
             self.delta = 0
