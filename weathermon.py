@@ -9,7 +9,6 @@ from lib.ad import ADS1015
 from lib.shtc3 import SHTC3
 from lib.lps22hb import LPS22HB
 from lib.anemometer import Anemometer
-from lib.dht11 import DHT11
 from lib.influxdb import Influxdb
 
 db = Influxdb(host='rpi4b-1', port='8086')
@@ -83,7 +82,6 @@ def main():
     pr = LPS22HB()
     an = Anemometer(5)
     dr = ADS1015()
-    dh = DHT11(23)
     mq = Mqtt('192.168.1.10')
 
     setup_db(client)
@@ -100,15 +98,6 @@ def main():
 
         temp_hum = get_temperature_and_humidity(th, 'SHTC3')
         data.append(temp_hum)
-
-        # We must stop the anemometer while reading DHT11
-        # or really bad things happen
-        an.stop()
-        time.sleep(0.05)
-        dh_temp_hum = get_temperature_and_humidity(dh, 'DHT11')
-        data.append(dh_temp_hum)
-
-        an.start()
 
         wind = get_wind(an, dr)
         data.append(wind)
@@ -127,9 +116,7 @@ def main():
         print("---[{}]---".format(time.asctime()))
         print("Pressure     : {:.2f}".format(pressure['fields']['pressure']))
         print("Temperature  : {:.2f}".format(temp_hum['fields']['tempf']))
-        print("DHT Temp     : {:.2f}".format(dh_temp_hum['fields']['tempf']))
         print("Humidity     : {:.2f} %".format(temp_hum['fields']['humidity']))
-        print("DHT Humidity : {:.2f} %".format(dh_temp_hum['fields']['humidity']))
         print("Avg WindSpeed: {:.2f} Mph".format(get_average(wind_avg)))
         print("Wind Speed   : {:.2f} Mph".format(wind['fields']['windspeed']))
         print("Max Gust     : {:.2f} Mph".format(wind['fields']['gust']))
