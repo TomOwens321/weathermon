@@ -23,7 +23,7 @@ class Anemometer():
     def _isr(self, channel):
         now_time = time.time()
         self.delta = now_time - self.last_time
-        if self.delta < self.gust_delta:
+        if self.delta > 0.008 and self.delta < self.gust_delta:
             self.gust_delta = self.delta
         self.last_time = now_time
         self.pulse_count += 1
