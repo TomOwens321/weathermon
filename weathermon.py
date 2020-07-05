@@ -93,6 +93,7 @@ def main():
         loop_count += 1
         data = []
 
+        rpm = an.rpm()
         pressure = get_pressure(pr)
         data.append(pressure)
 
@@ -121,6 +122,7 @@ def main():
         print("Wind Speed   : {:.2f} Mph".format(wind['fields']['windspeed']))
         print("Max Gust     : {:.2f} Mph".format(wind['fields']['gust']))
         print("Wind Dir     : {} | {}".format(wind['fields']['dir_text'], wind['fields']['dir_value']))
+        print("RPM          : {:.2f}".format(rpm))
         print("-----------------------------\n")
         time.sleep(delay)
 
