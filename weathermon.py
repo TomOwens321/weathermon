@@ -100,6 +100,8 @@ def get_1w_temperature(device):
         'tempf': round(conv.c_to_f(temp), 2)
     }
 
+    return reading
+
 def get_average(readings):
     avg = 0
     if len(readings) > 0:
@@ -119,12 +121,12 @@ def main():
     an.start()
     loop_count = 0
     wind_avg = []
+    owdevs = scan_1w_devices(ow_hosts)
 
     while True:
         loop_count += 1
         data = []
 
-        owdevs = scan_1w_devices(ow_hosts)
         for dev in owdevs:
             w1_temp = get_1w_temperature(dev)
             data.append(w1_temp)
