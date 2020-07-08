@@ -80,7 +80,7 @@ def main():
     retain = 600
     th = SHTC3()
     pr = LPS22HB()
-    an = Anemometer(5)
+    an = Anemometer(17)
     dr = ADS1015()
     mq = Mqtt('192.168.1.10')
 
