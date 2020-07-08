@@ -10,11 +10,13 @@ from lib.shtc3 import SHTC3
 from lib.lps22hb import LPS22HB
 from lib.anemometer import Anemometer
 from lib.influxdb import Influxdb
+from lib.ownet import Ownet
 
 db = Influxdb(host='rpi4b-1', port='8086')
 client = db.client()
 
 mq_topic = 'sun-chaser/testing'
+ow_hosts = ['greenhousepi.ourhouse']
 
 def setup_db(client):
     client.create_database('sensors_test')
@@ -69,6 +71,35 @@ def get_wind(an, dr):
 
     return reading
 
+def scan_1w_devices(hosts):
+    sensors=[]
+
+    for host in hosts:
+        client = Ownet(host)
+
+        for dev in client.devices:
+            device = {'host': host, 'device': dev, 'type': client.read(dev, 'type')}
+            sensors.append(device)
+
+    if sensors:
+        print("I found {} devices".format(len(sensors)))
+        print(sensors)
+
+    return sensors
+
+def get_1w_temperature(device):
+    reading = {}
+    client = Ownet(device['host'])
+    temp = client.read(device['device'])
+    name = client.device_name(device['device'])
+
+    reading['measurement'] = 'weathermon'
+    reading['tags'] = {'sensorName': name, 'sensorLocation': 'Ourhouse'}
+    reading['fields'] = {
+        'tempc': temp,
+        'tempf': round(conv.c_to_f(temp), 2)
+    }
+
 def get_average(readings):
     avg = 0
     if len(readings) > 0:
@@ -92,6 +123,11 @@ def main():
     while True:
         loop_count += 1
         data = []
+
+        owdevs = scan_1w_devices(ow_hosts)
+        for dev in owdevs:
+            w1_temp = get_1w_temperature(dev)
+            data.append(w1_temp)
 
         pressure = get_pressure(pr)
         data.append(pressure)
