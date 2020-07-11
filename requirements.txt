@@ -12,4 +12,5 @@ requests==2.24.0
 RPi.GPIO==0.7.0
 six==1.15.0
 smbus==1.1.post2
+spidev==3.5
 urllib3==1.25.9
