@@ -1,4 +1,5 @@
 """My own damned as3935 driver"""
+import time
 import spidev
 
 # private constants
@@ -6,6 +7,8 @@ import spidev
 _DIRECT_COMMAND = 0x96
 _DISTURB_OFF_CMD = 0x20
 _ZERO = 0x00
+_INDOOR = 0x12
+_OUTDOOR = 0x0e
 
 # data registers
 
@@ -51,6 +54,17 @@ class AS3935(object):
         self.spi = self._setup_spi(bus, channel)
 
     @property
+    def power_down(self):
+        """Power down the AS3935
+           Register 0x00 Bits [0:0]"""
+        reply = self.read_register(_AFE_GAIN)
+        return reply[-1] & _POWER_MASK
+
+    @power_down.setter
+    def power_down(self, value):
+        self._write_register_bits(_AFE_GAIN, _POWER_MASK, value, 0)
+
+    @property
     def distance(self):
         reply = self._read_register(_DISTANCE)
         return reply[-1] & _DIV_MASK
@@ -81,17 +95,64 @@ class AS3935(object):
         msg = [_INT_MASK_ANT, value]
         reply = self.spi.xfer2(msg)
 
+    def indoor(self, indoor=True):
+        value = _OUTDOOR << 1
+        if indoor:
+            value = _INDOOR << 1
+        print("Value = {}".format(value))
+        reply = self._write_register(_AFE_GAIN, value)
+        return reply
+
+    def threshold(self, value):
+        """Threshold is bits [3:0] - Save the others before storing the value"""
+        current = self._read_register(_THRESHOLD)[-1]
+        updated = (current & _R_SPIKE_MASK) | (value & _SPIKE_MASK)
+        print("\n---- setting threshold ----")
+        print("register value before : 0b{:08b}".format(current))
+        print("register value after  : 0b{:08b}".format(updated))
+        reply = self._write_register(_THRESHOLD, updated)
+        return reply
+
+    @property
+    def noise_floor(self):
+        reply = self.read_register(_THRESHOLD)
+        value = (reply[-1] & _NOISE_FLOOR_MASK) >> 4
+        return value
+
+    @noise_floor.setter
+    def noise_floor(self, value):
+        """Noise floor is bits [6:4]"""
+        if value < 1 or value > 7:
+            raise ValueError("Noise level must be from 1 to 7")
+        self._write_register_bits(_THRESHOLD, _NOISE_FLOOR_MASK, value, 4)
+
+    def calibrate(self):
+        self._write_register(_CALIB_RCO, _DIRECT_COMMAND)
+        time.sleep(0.002)
+        self._write_register_bits(_FREQ_DISP_IRQ, _OSC_MASK, 1, 5)
+        time.sleep(0.002)
+        self._write_register_bits(_FREQ_DISP_IRQ, _OSC_MASK, 0, 5)
+        time.sleep(0.002)
+
     def set_defaults(self):
-        msg = [_DEFAULT_RESET, _DIRECT_COMMAND]
-        reply = self.spi.xfer2(msg)
+        reply = self._write_register(_DEFAULT_RESET, _DIRECT_COMMAND)
         return reply[-1]
 
     def _read_register(self, register):
         msg = [register | _SPI_READ_MASK, _ZERO]
-        # print("Out Message {}".format(msg))
         reply = self.spi.xfer2(msg)
-        # print("In  Message {}".format(reply))
         return reply
+
+    def _write_register(self, register, value):
+        msg = [register, value]
+        reply = self.spi.xfer2(msg)
+        return reply
+
+    def _write_register_bits(self, register, mask, bits, start_position):
+        current = self._read_register(register)[-1]
+        current &= (~mask)
+        current |= (bits << start_position)
+        self._write_register(register, current)
 
     def _setup_spi(self, bus, channel, mode=1):
         spi = spidev.SpiDev(bus, channel)
