@@ -29,6 +29,7 @@ def setup_db(client):
 
 def _isr(channel):
     global print_new
+    time.sleep(0.006)
     interrupt = lightning.read_interrupt_register()
     if interrupt in event_counter:
         event_counter[interrupt] += 1
@@ -100,8 +101,6 @@ def adjust_watchdog_threshold():
         lightning.watchdog_threshold = w_dog - 1
         lightning.calibrate()
 
-
-
 setup_db(db_client)
 
 lightning = AS3935(SPI_CHANNEL)
@@ -112,9 +111,11 @@ for i in range(9):
     print("Register {:02x} value : 0b {:08b}".format(i, value))
 
 lightning.mask_disturber = False
-lightning.indoor_outdoor = OUTDOOR
+lightning.indoor_outdoor = INDOOR
 lightning.noise_floor = 1
 lightning.watchdog_threshold = 3
+lightning.spike_rejection = 3
+lightning.tune_cap = 7
 lightning.calibrate()
 
 print("------------")
@@ -134,7 +135,9 @@ print_new = True
 
 data = []
 
+loop_count = 0
 while True:
+    loop_count += 1
     if print_new:
         print("\n-------------------------")
         print("Lightning Count: {}".format(l_count))
@@ -144,6 +147,7 @@ while True:
         print("Energy (now)   : {}".format(lightning.lightning_energy))
         print("Noise Floor    : {}".format(lightning.noise_floor))
         print("Watchdog Thres : {}".format(lightning.watchdog_threshold))
+        print("Spike Rejection: {}".format(lightning.spike_rejection))
         print("Kaboom Count   : {}".format(len(kaboom)))
         if len(kaboom):
             print("Last Kaboom    : {}".format(kaboom[-1]))
@@ -156,7 +160,7 @@ while True:
         lightning.read_interrupt_register()
 
     # try to auto_adjust the watchdog_threshold
-    adjust_watchdog_threshold()
+    # adjust_watchdog_threshold()
 
     # send kabooms to Influx
     kdata = package_kabooms()
@@ -164,5 +168,9 @@ while True:
     db_client.write_points(kdata, database='sensors_test', retention_policy='oneday')
     print(kdata)
     kaboom = []
+
+    if loop_count == 10:
+        print_new = True
+        loop_count = 0
 
     time.sleep(30)
