@@ -1,5 +1,5 @@
 pipeline {
-    agent 'rpi4b-1' {
+    agent  {
         docker { image 'python:3.7-alpine'}
     }
 
