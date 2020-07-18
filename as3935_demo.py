@@ -115,7 +115,7 @@ lightning.indoor_outdoor = INDOOR
 lightning.noise_floor = 1
 lightning.watchdog_threshold = 3
 lightning.spike_rejection = 3
-lightning.tune_cap = 7
+lightning.tune_cap = 8
 lightning.calibrate()
 
 print("------------")
