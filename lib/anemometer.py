@@ -23,14 +23,14 @@ class Anemometer():
     def _isr(self, channel):
         now_time = time.time()
         self.delta = now_time - self.last_time
-        if self.delta < self.gust_delta:
+        if self.delta < self.gust_delta and self.delta > .001:
             self.gust_delta = self.delta
         self.last_time = now_time
         self.pulse_count += 1
         # print("Anemometer trigger event")
 
     def start(self):
-        GPIO.add_event_detect(self.anemometer_pin, GPIO.RISING, callback=self._isr)
+        GPIO.add_event_detect(self.anemometer_pin, GPIO.RISING, callback=self._isr, bouncetime=15)
 
     def stop(self):
         GPIO.remove_event_detect(self.anemometer_pin)

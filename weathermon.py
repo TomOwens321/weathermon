@@ -16,7 +16,7 @@ db = Influxdb(host='rpi4b-1', port='8086')
 client = db.client()
 
 mq_topic = 'sun-chaser/testing'
-ow_hosts = ['greenhousepi.ourhouse']
+ow_hosts = ['localhost']
 
 def setup_db(client):
     client.create_database('sensors_test')
@@ -113,7 +113,7 @@ def main():
     retain = 600
     th = SHTC3()
     pr = LPS22HB()
-    an = Anemometer(5)
+    an = Anemometer(17)
     dr = ADS1015()
     mq = Mqtt('192.168.1.10')
 
@@ -127,9 +127,11 @@ def main():
         loop_count += 1
         data = []
 
-        for dev in owdevs:
-            w1_temp = get_1w_temperature(dev)
-            data.append(w1_temp)
+        # for dev in owdevs:
+        if len(owdevs) > 0:
+            w1_temp = get_1w_temperature(owdevs[0])
+            if w1_temp['fields']['tempc'] < 80:
+                data.append(w1_temp)
 
         pressure = get_pressure(pr)
         data.append(pressure)
@@ -159,6 +161,7 @@ def main():
         print("Wind Speed   : {:.2f} Mph".format(wind['fields']['windspeed']))
         print("Max Gust     : {:.2f} Mph".format(wind['fields']['gust']))
         print("Wind Dir     : {} | {}".format(wind['fields']['dir_text'], wind['fields']['dir_value']))
+        print("{: <12} : {:.2f}".format(w1_temp['tags']['sensorName'], w1_temp['fields']['tempf']))
         print("-----------------------------\n")
         time.sleep(delay)
 
