@@ -132,7 +132,7 @@ def main():
             w1_temp = get_1w_temperature(owdevs[0])
             if w1_temp['fields']['tempc'] < 80:
                 data.append(w1_temp)
-
+                
         pressure = get_pressure(pr)
         data.append(pressure)
 
