@@ -166,8 +166,11 @@ while True:
 
     # send kabooms to Influx
     kdata = package_kabooms()
+    try:
+        db_client.write_points(kdata, database='sensors_test', retention_policy='oneday')
+    except:
+        print("Error communicating with InfluxDb. Skipping"
 
-    db_client.write_points(kdata, database='sensors_test', retention_policy='oneday')
     print(kdata)
     kaboom = []
 
