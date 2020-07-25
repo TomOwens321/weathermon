@@ -169,7 +169,7 @@ while True:
     try:
         db_client.write_points(kdata, database='sensors_test', retention_policy='oneday')
     except:
-        print("Error communicating with InfluxDb. Skipping"
+        print("Error communicating with InfluxDb. Skipping")
 
     print(kdata)
     kaboom = []
