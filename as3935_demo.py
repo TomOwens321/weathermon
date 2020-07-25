@@ -29,7 +29,7 @@ def setup_db(client):
 
 def _isr(channel):
     global print_new
-    time.sleep(0.006)
+    time.sleep(0.002)
     interrupt = lightning.read_interrupt_register()
     if interrupt in event_counter:
         event_counter[interrupt] += 1
@@ -43,6 +43,7 @@ def _isr(channel):
         event['type_num'] = interrupt
         event['distance'] = lightning.distance_to_storm
         event['energy'] = lightning.lightning_energy
+        # lightning.clear_statistics()
         kaboom.append(event)
 
     print_new = True
@@ -111,11 +112,12 @@ for i in range(9):
     print("Register {:02x} value : 0b {:08b}".format(i, value))
 
 lightning.mask_disturber = False
-lightning.indoor_outdoor = INDOOR
-lightning.noise_floor = 1
+# lightning.indoor_outdoor = INDOOR
+# lightning.noise_level = 2
 lightning.watchdog_threshold = 3
-lightning.spike_rejection = 3
-lightning.tune_cap = 8
+# lightning.spike_rejection = 2
+# # From calibration test w/ Arduino
+lightning.tune_cap = 32
 lightning.calibrate()
 
 print("------------")
@@ -145,7 +147,7 @@ while True:
         print("Noise Count    : {}".format(n_count))
         print("Distance       : {}".format(lightning.distance_to_storm))
         print("Energy (now)   : {}".format(lightning.lightning_energy))
-        print("Noise Floor    : {}".format(lightning.noise_floor))
+        print("Noise Level    : {}".format(lightning.noise_level))
         print("Watchdog Thres : {}".format(lightning.watchdog_threshold))
         print("Spike Rejection: {}".format(lightning.spike_rejection))
         print("Kaboom Count   : {}".format(len(kaboom)))

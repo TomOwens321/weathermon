@@ -6,7 +6,7 @@ from lib.sparkfun_qwiicas3935 import Sparkfun_QwiicAS3935_SPIDEV as AS3935
 SPI_CHANNEL = 0
 board = AS3935(SPI_CHANNEL)
 
-DELAY_TIME = 20
+DELAY_TIME = 30
 
 board.reset()
 
