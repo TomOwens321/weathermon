@@ -1,5 +1,6 @@
 import time
 import RPi.GPIO as GPIO
+from datetime import datetime
 from lib.sparkfun_qwiicas3935 import Sparkfun_QwiicAS3935_SPIDEV as AS3935
 from lib.influxdb import Influxdb
 
@@ -93,11 +94,11 @@ def adjust_watchdog_threshold():
     d_count = event_counter[4]
     w_dog = lightning.watchdog_threshold
 
-    if d_count >= 10 and w_dog < 7:
+    if d_count >= 20 and w_dog < 7:
         print("Increasing watchdog trigger to {}".format(w_dog + 1))
         lightning.watchdog_threshold = w_dog + 1
         lightning.calibrate()
-    elif d_count <= 2 and w_dog > 2:
+    elif d_count <= 5 and w_dog > 2:
         print("Decreasing watchdog trigger to {}".format(w_dog - 1))
         lightning.watchdog_threshold = w_dog - 1
         lightning.calibrate()
@@ -112,9 +113,9 @@ for i in range(9):
     print("Register {:02x} value : 0b {:08b}".format(i, value))
 
 lightning.mask_disturber = False
-# lightning.indoor_outdoor = INDOOR
+lightning.indoor_outdoor = OUTDOOR
 # lightning.noise_level = 2
-lightning.watchdog_threshold = 3
+# lightning.watchdog_threshold = 3
 # lightning.spike_rejection = 2
 # # From calibration test w/ Arduino
 lightning.tune_cap = 32
@@ -136,6 +137,8 @@ start()
 print_new = True
 
 data = []
+
+last_day = datetime.today().day
 
 loop_count = 0
 while True:
@@ -177,5 +180,10 @@ while True:
     if loop_count == 10:
         print_new = True
         loop_count = 0
+
+    current_day = datetime.today().day
+    if current_day != last_day:
+        l_count, d_count, n_count = 0, 0, 0
+        last_day = current_day
 
     time.sleep(30)
