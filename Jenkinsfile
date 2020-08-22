@@ -7,6 +7,7 @@ pipeline {
         stage ('Test') {
             steps {
                 sh 'python --version'
+                sh 'pip install -r test_requirements.txt'
             }
         }
     }
