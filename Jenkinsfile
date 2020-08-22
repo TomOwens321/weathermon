@@ -6,10 +6,12 @@ pipeline {
     stages {
         stage ('Test') {
             steps {
-                sh 'python --version'
-                sh 'python3 -m venv env'
-                sh 'source ./env/bin/activate'
-                sh 'pip install -r test_requirements.txt'
+                script {
+                    python --version
+                    python3 -m venv env
+                    source ./env/bin/activate
+                    pip install -r test_requirements.txt
+                }
             }
         }
     }
