@@ -127,9 +127,9 @@ def main():
         loop_count += 1
         data = []
 
-        # for dev in owdevs:
-        if len(owdevs) > 0:
-            w1_temp = get_1w_temperature(owdevs[0])
+        for dev in owdevs:
+        # if len(owdevs) > 0:
+            w1_temp = get_1w_temperature(dev)
             if w1_temp['fields']['tempc'] < 80:
                 data.append(w1_temp)
                 
