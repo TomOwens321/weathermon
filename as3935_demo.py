@@ -179,7 +179,7 @@ while True:
         print("Error communicating with InfluxDb. Skipping")
 
     print(kdata)
-    mq.send(mq_topic, json.dumps(data))
+    mq.send(mq_topic, json.dumps(kdata))
     kaboom = []
 
     if loop_count == 10:
