@@ -116,7 +116,7 @@ lightning.mask_disturber = False
 lightning.indoor_outdoor = OUTDOOR
 # lightning.noise_level = 2
 # lightning.watchdog_threshold = 3
-# lightning.spike_rejection = 2
+lightning.spike_rejection = 3
 # # From calibration test w/ Arduino
 lightning.tune_cap = 32
 lightning.calibrate()
