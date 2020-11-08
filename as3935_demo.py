@@ -1,6 +1,8 @@
 import time
+import json
 import RPi.GPIO as GPIO
 from datetime import datetime
+from lib.mqtt import Mqtt
 from lib.sparkfun_qwiicas3935 import Sparkfun_QwiicAS3935_SPIDEV as AS3935
 from lib.influxdb import Influxdb
 
@@ -20,6 +22,8 @@ l_count, d_count, n_count = 0, 0, 0
 
 db = Influxdb(host='rpi4b-1', port='8086')
 db_client = db.client()
+mq_topic = 'sun-chaser/lightning'
+mq = Mqtt('192.168.1.10')
 
 kaboom = []
 
@@ -175,6 +179,7 @@ while True:
         print("Error communicating with InfluxDb. Skipping")
 
     print(kdata)
+    mq.send(mq_topic, json.dumps(data))
     kaboom = []
 
     if loop_count == 10:
