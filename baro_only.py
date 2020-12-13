@@ -5,6 +5,7 @@ import json
 import lib.conversions as conv
 from lib.lps22hb import LPS22HB
 from lib.mqtt import Mqtt
+from lib.influxdb import Influxdb
 
 MQTT_TOPIC = 'sun-chaser/weather'
 mq = Mqtt('192.168.1.10')
