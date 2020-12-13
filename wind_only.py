@@ -30,11 +30,12 @@ def get_wind(an, dr):
 
     return reading
 
-def get_average(readings):
+def get_average(readings, max=50):
     avg = 0
-    if len(readings) > 10:
+    if len(readings) > max:
         readings.pop(0)
     if len(readings) > 0:
+        print("Avg size = {}".format(len(readings)))
         avg = sum(readings) / len(readings)
     return avg
 
@@ -51,14 +52,17 @@ def main():
     last_day = 0
     max_daily_gust = 0.0
 
+    wait_time = 15.0
+    max_count = 600 / wait_time
+
     while True:
         data = []
         loop_count += 1
         wind = get_wind(an, dr)
         wind_avg.append(wind['fields']['windspeedmph'])
         winddir_avg.append(wind['fields']['winddir'])
-        wind['fields']['windspdmph_avg10m'] = float(round(get_average(wind_avg), 2))
-        wind['fields']['winddir_avg10m'] = float(round(get_average(winddir_avg), 2))
+        wind['fields']['windspdmph_avg10m'] = float(round(get_average(wind_avg, max=max_count), 2))
+        wind['fields']['winddir_avg10m'] = float(round(get_average(winddir_avg, max=max_count), 2))
 
         today = datetime.date.today().day
         if today != last_day:
@@ -77,13 +81,13 @@ def main():
             topic = MQTT_TOPIC + '/' + d['measurement'] + '/' + d['tags']['sensorName']
             mq.send(topic, json.dumps(d))
 
-        if loop_count >= 10:
+        if loop_count >= 600 / wait_time:
             an.reset_gust()
             # wind_avg = []
             # winddir_avg = []
             loop_count = 0
         
-        time.sleep(60)
+        time.sleep(wait_time)
 
 
     pass
