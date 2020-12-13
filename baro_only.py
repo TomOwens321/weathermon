@@ -35,6 +35,7 @@ def main():
         data = []
         pressure = get_pressure(pr)
         data.append(pressure)
+        print(data)
         db_client.write_points(data, database='weather_data', retention_policy='one_year')
         for d in data:
             topic = MQTT_TOPIC + '/' + d['measurement'] + '/' + d['tags']['sensorName']
