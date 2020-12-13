@@ -12,7 +12,7 @@ db_client = db.client()
 
 MQTT_TOPIC = 'sun-chaser/weather'
 
-def get_wind(an, dr):
+def get_wind(an, dr, avg):
     reading = {}
     windspeed = an.windspeed()
     d_text,d_value = dr.direction()
@@ -22,6 +22,7 @@ def get_wind(an, dr):
     reading['tags'] = {'sensorName': 'Anemometer', 'sensorLocation': 'Wellhouse', 'sensorType': 'WeatherRack'}
     reading['fields'] = {
         'windspeedmph': round(windspeed, 2),
+        'windspdmph_avg10m': round(get_average(avg), 2),
         'windgustmph': round(gust, 2),
         'winddirtext': d_text,
         'winddir': d_value
@@ -29,16 +30,26 @@ def get_wind(an, dr):
 
     return reading
 
+def get_average(readings):
+    avg = 0
+    if len(readings) > 0:
+        avg = sum(readings) / len(readings)
+    return avg
+
 def main():
     an = Anemometer(17)
     dr = ADS1015()
     mq = Mqtt('192.168.1.10')
+    wind_avg = []
 
     an.start()
-
+    loop_count = 0
     while True:
         data = []
-        data.append(get_wind(an, dr))
+        loop_count += 1
+        wind = get_wind(an, dr, wind_avg)
+        wind_avg.append(wind['fields']['windspeedmph'])
+        data.append(wind)
         print(data)
         db_client.write_points(data, database='weather_data', retention_policy='one_year')
         for d in data:
@@ -46,6 +57,9 @@ def main():
             mq.send(topic, json.dumps(d))
 
         an.reset_gust()
+        if loop_count >= 10:
+            wind_avg = []
+            loop_count = 0
         time.sleep(60)
 
 
