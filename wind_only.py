@@ -22,7 +22,7 @@ def get_wind(an, dr, avg):
     reading['tags'] = {'sensorName': 'Anemometer', 'sensorLocation': 'Wellhouse', 'sensorType': 'WeatherRack'}
     reading['fields'] = {
         'windspeedmph': round(windspeed, 2),
-        'windspdmph_avg10m': round(get_average(avg), 2),
+        'windspdmph_avg10m': float(round(get_average(avg), 2)),
         'windgustmph': round(gust, 2),
         'winddirtext': d_text,
         'winddir': d_value
