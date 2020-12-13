@@ -21,7 +21,7 @@ MEASUREMENTS = {
 
 aw = AmbientWeather(secrets.AMBIENT_API_KEY, secrets.AMBIENT_APPLICATION_KEY)
 mq = Mqtt('192.168.1.10')
-db = Influxdb(host='omv', port='8086')
+db = Influxdb(host='rpi4b-1.ourhouse', port='8086')
 db_client = db.client()
 
 def type_adjustments(raw):
@@ -60,6 +60,8 @@ def create_influx_data(raw):
         data['measurement'] = measurement
         data['time'] = raw['date']
         data['tags'] = {'sensorLocation': location, 'sensorType': 'AW-2000', 'sensorName': name}
+
+        # field renaming for consistency with other products
         for field in MEASUREMENTS[key]:
             f_name = field
             if f_name == 'tempinf':
@@ -72,6 +74,10 @@ def create_influx_data(raw):
                 f_name = 'dewPoint'
             elif f_name == 'humidityin':
                 f_name = 'humidity'
+            elif f_name == 'baromabsin':
+                f_name = 'raw_inhg'
+            elif f_name == 'baromrelin':
+                f_name = 'pressure'
 
             fields[f_name] = raw[field]
         data['fields'] = fields
