@@ -32,6 +32,8 @@ def get_wind(an, dr):
 
 def get_average(readings):
     avg = 0
+    if len(readings) > 10:
+        readings.pop(0)
     if len(readings) > 0:
         avg = sum(readings) / len(readings)
     return avg
@@ -77,8 +79,8 @@ def main():
 
         if loop_count >= 10:
             an.reset_gust()
-            wind_avg = []
-            winddir_avg = []
+            # wind_avg = []
+            # winddir_avg = []
             loop_count = 0
         
         time.sleep(60)
