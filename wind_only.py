@@ -34,6 +34,8 @@ def main():
     dr = ADS1015()
     mq = Mqtt('192.168.1.10')
 
+    an.start()
+
     while True:
         data = []
         data.append(get_wind(an, dr))
@@ -43,6 +45,7 @@ def main():
             topic = MQTT_TOPIC + '/' + d['measurement'] + '/' + d['tags']['sensorName']
             mq.send(topic, json.dumps(d))
 
+        an.reset_gust()
         time.sleep(60)
 
 
