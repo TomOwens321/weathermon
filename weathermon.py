@@ -15,7 +15,7 @@ from lib.ownet import Ownet
 db = Influxdb(host='rpi4b-1', port='8086')
 client = db.client()
 
-mq_topic = 'sun-chaser/testing'
+mq_topic = 'sun-chaser/weather/rpi'
 ow_hosts = ['localhost']
 
 def setup_db(client):
@@ -126,6 +126,7 @@ def main():
     while True:
         loop_count += 1
         data = []
+        w1_temp = False
 
         for dev in owdevs:
         # if len(owdevs) > 0:
@@ -161,7 +162,9 @@ def main():
         print("Wind Speed   : {:.2f} Mph".format(wind['fields']['windspeed']))
         print("Max Gust     : {:.2f} Mph".format(wind['fields']['gust']))
         print("Wind Dir     : {} | {}".format(wind['fields']['dir_text'], wind['fields']['dir_value']))
-        print("{: <12} : {:.2f}".format(w1_temp['tags']['sensorName'], w1_temp['fields']['tempf']))
+        if w1_temp:
+            print("{: <12} : {:.2f}".format(w1_temp['tags']['sensorName'], w1_temp['fields']['tempf']))
+        print("Next Update  : {} seconds".format(retain - (loop_count * delay)))
         print("-----------------------------\n")
         time.sleep(delay)
 
