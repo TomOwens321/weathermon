@@ -7,7 +7,7 @@ from lib.ad import ADS1015
 from lib.anemometer import Anemometer
 
 db = Influxdb(host='rpi4b-1.ourhouse', port='8086')
-client = db.client()
+db_client = db.client()
 
 MQTT_TOPIC = 'sun-chaser/weather'
 
@@ -32,10 +32,11 @@ def main():
     an = Anemometer(17)
     dr = ADS1015()
     mq = Mqtt('192.168.1.10')
-    data = []
 
-    data.append(get_wind(an, dr))
-    print(data)
+    while True:
+        data = []
+        data.append(get_wind(an, dr))
+        print(data)
         db_client.write_points(data, database='weather_data', retention_policy='one_year')
         for d in data:
             topic = MQTT_TOPIC + '/' + d['measurement'] + '/' + d['tags']['sensorName']
