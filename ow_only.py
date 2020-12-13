@@ -27,6 +27,8 @@ def scan_1w_devices(hosts, sensors):
     if sensors:
         print("I found {} devices".format(len(sensors)))
         print(sensors)
+    else:
+        print("No OneWire sensors found.")
 
     return sensors
 

@@ -6,7 +6,6 @@ from lib.mqtt import Mqtt
 from lib.influxdb import Influxdb
 from lib.ambientweather import AmbientWeather
 
-# MQTT_TOPIC = 'sun-chaser/weather/ambientweather'
 MQTT_TOPIC = 'sun-chaser/weather'
 
 MEASUREMENTS = {
@@ -77,7 +76,7 @@ def create_influx_data(raw):
             fields[f_name] = raw[field]
         data['fields'] = fields
         measurements.append(data)
-    print(measurements)
+    # print(measurements)
     return measurements
 
 def get_full_day():
