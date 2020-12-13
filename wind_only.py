@@ -42,6 +42,9 @@ def main():
     wind_avg = []
 
     an.start()
+    # let the anemometer get a few counts
+    time.sleep(5)
+    
     loop_count = 0
     while True:
         data = []
