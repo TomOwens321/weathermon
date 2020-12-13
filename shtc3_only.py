@@ -1,4 +1,4 @@
-#/usr/bin/env python3
+#!/usr/bin/env python3
 import time
 import json
 import lib.conversions as conv
@@ -42,6 +42,7 @@ def main():
     
     while True:
         data = get_temperature_and_humidity(th, 'PiBoxInside')
+        print(data)
         db_client.write_points(data, database='weather_data', retention_policy='one_year')
         for d in data:
             topic = MQTT_TOPIC + '/' + d['measurement'] + '/' + d['tags']['sensorName']
