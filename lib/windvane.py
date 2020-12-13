@@ -6,7 +6,7 @@ class Windvane:
 #        dir = int(dir * 100)
         dir = int(dir * .2)
         if dir in range(239, 260):
-            return ("N  ", 0.0)
+            return ("N  ", 360.0)
         if dir in range(111, 140):
             return ("NNE", 22.5)
         if dir in range(140, 171):
