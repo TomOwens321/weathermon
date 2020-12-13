@@ -21,8 +21,8 @@ def get_wind(an, dr):
     reading['measurement'] = 'wind'
     reading['tags'] = {'sensorName': 'Anemometer', 'sensorLocation': 'Wellhouse', 'sensorType': 'WeatherRack'}
     reading['fields'] = {
-        'windspeedmph': windspeed,
-        'windgustmph': gust,
+        'windspeedmph': round(windspeed, 2),
+        'windgustmph': round(gust, 2),
         'winddirtext': d_text,
         'winddir': d_value
     }
