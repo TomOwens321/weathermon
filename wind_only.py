@@ -41,6 +41,7 @@ def main():
     dr = ADS1015()
     mq = Mqtt('192.168.1.10')
     wind_avg = []
+    winddir_avg = []
 
     an.start()
 
@@ -53,7 +54,9 @@ def main():
         loop_count += 1
         wind = get_wind(an, dr)
         wind_avg.append(wind['fields']['windspeedmph'])
+        winddir_avg.append(wind['fields']['winddir'])
         wind['fields']['windspdmph_avg10m'] = float(round(get_average(wind_avg), 2))
+        wind['fields']['winddir_avg10m'] = float(round(get_average(winddir_avg), 2))
 
         today = datetime.date.today().day
         if today != last_day:
@@ -64,7 +67,7 @@ def main():
             max_daily_gust = wind['fields']['windgustmph']
         
         wind['fields']['maxdailygust'] = max_daily_gust
-        
+
         data.append(wind)
         print(data)
         db_client.write_points(data, database='weather_data', retention_policy='one_year')
@@ -75,7 +78,9 @@ def main():
         if loop_count >= 10:
             an.reset_gust()
             wind_avg = []
+            winddir_avg = []
             loop_count = 0
+        
         time.sleep(60)
 
 
