@@ -12,7 +12,7 @@ db_client = db.client()
 
 MQTT_TOPIC = 'sun-chaser/weather'
 
-def get_wind(an, dr, avg):
+def get_wind(an, dr):
     reading = {}
     windspeed = an.windspeed()
     d_text,d_value = dr.direction()
@@ -22,7 +22,6 @@ def get_wind(an, dr, avg):
     reading['tags'] = {'sensorName': 'Anemometer', 'sensorLocation': 'Wellhouse', 'sensorType': 'WeatherRack'}
     reading['fields'] = {
         'windspeedmph': round(windspeed, 2),
-        'windspdmph_avg10m': float(round(get_average(avg), 2)),
         'windgustmph': round(gust, 2),
         'winddirtext': d_text,
         'winddir': d_value
@@ -47,8 +46,10 @@ def main():
     while True:
         data = []
         loop_count += 1
-        wind = get_wind(an, dr, wind_avg)
+        wind = get_wind(an, dr)
         wind_avg.append(wind['fields']['windspeedmph'])
+        wind['fields']['windspdmph_avg10m'] = float(round(get_average(wind_avg), 2))
+
         data.append(wind)
         print(data)
         db_client.write_points(data, database='weather_data', retention_policy='one_year')
