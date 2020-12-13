@@ -44,7 +44,7 @@ def main():
     an.start()
     # let the anemometer get a few counts
     time.sleep(5)
-    
+
     loop_count = 0
     while True:
         data = []
@@ -60,8 +60,8 @@ def main():
             topic = MQTT_TOPIC + '/' + d['measurement'] + '/' + d['tags']['sensorName']
             mq.send(topic, json.dumps(d))
 
-        an.reset_gust()
         if loop_count >= 10:
+            an.reset_gust()
             wind_avg = []
             loop_count = 0
         time.sleep(60)
