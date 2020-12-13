@@ -35,7 +35,6 @@ def get_average(readings, max=50):
     if len(readings) > max:
         readings.pop(0)
     if len(readings) > 0:
-        print("Avg size = {}".format(len(readings)))
         avg = sum(readings) / len(readings)
     return avg
 
