@@ -3,6 +3,7 @@
 import time
 import json
 from lib.mqtt import Mqtt
+from lib.influxdb import Influxdb
 from lib.ad import ADS1015
 from lib.anemometer import Anemometer
 
