@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import time
+import datetime
 import json
 from lib.mqtt import Mqtt
 from lib.influxdb import Influxdb
@@ -42,10 +43,11 @@ def main():
     wind_avg = []
 
     an.start()
-    # let the anemometer get a few counts
-    time.sleep(5)
 
     loop_count = 0
+    last_day = 0
+    max_daily_gust = 0.0
+
     while True:
         data = []
         loop_count += 1
@@ -53,6 +55,16 @@ def main():
         wind_avg.append(wind['fields']['windspeedmph'])
         wind['fields']['windspdmph_avg10m'] = float(round(get_average(wind_avg), 2))
 
+        today = datetime.date.today().day
+        if today != last_day:
+            max_daily_gust = 0.0
+            last_day = today
+
+        if wind['fields']['windgustmph'] > max_daily_gust:
+            max_daily_gust = wind['fields']['windgustmph']
+        
+        wind['fields']['maxdailygust'] = max_daily_gust
+        
         data.append(wind)
         print(data)
         db_client.write_points(data, database='weather_data', retention_policy='one_year')
