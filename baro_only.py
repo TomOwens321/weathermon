@@ -21,11 +21,11 @@ def get_pressure(sensor):
     reading['measurement'] = 'barometer'
     reading['tags'] = {'sensorType': 'LPS22HB', 'sensorLocation': 'Wellhouse', 'sensorName': 'WH Pressure'}
     reading['fields'] = {
-        'raw_hpa': pr,
-        'raw_inhg': conv.hpa_to_inhg(pr),
-        'adjusted_hpa': adjusted_pr,
-        'adjusted_inhg': conv.hpa_to_inhg(adjusted_pr),
-        'pressure': round(conv.hpa_to_inhg(adjusted_pr),2)
+        'raw_hpa': round(pr, 2),
+        'raw_inhg': round(conv.hpa_to_inhg(pr), 2),
+        'adjusted_hpa': round(adjusted_pr, 2),
+        'adjusted_inhg': round(conv.hpa_to_inhg(adjusted_pr), 2),
+        'pressure': round(conv.hpa_to_inhg(adjusted_pr), 2)
     }
 
     return reading
