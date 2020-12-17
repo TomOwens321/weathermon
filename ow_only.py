@@ -35,7 +35,11 @@ def scan_1w_devices(hosts, sensors):
 def get_1w_temperature(device):
     reading = {}
     client = Ownet(device['host'])
-    temp = client.read(device['device'])
+    try:
+        temp = client.read(device['device'])
+    except:
+        print("Error reading {}.".format(device['device']))
+        return reading
     if temp > 75.0:
         return reading
     name = client.device_name(device['device'])
