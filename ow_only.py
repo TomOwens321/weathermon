@@ -44,8 +44,8 @@ def get_1w_temperature(device):
         return reading
     name = client.device_name(device['device'])
     location = 'Greenhouse'
-    if name == 'Test_Sensor2':
-        location = 'WellHouse'
+    if name == 'Wellhouse':
+        location = name
 
     reading['measurement'] = 'temperature'
     reading['tags'] = {'sensorName': name, 'sensorLocation': location, 'sensorType': device['type']}
