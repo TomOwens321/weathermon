@@ -67,8 +67,11 @@ def main():
             data.append(measurement)
         db_client.write_points(data, database='weather_data', retention_policy='one_year')
         for d in data:
-            topic = mq_topic + '/' + d['measurement'] + '/' + d['tags']['sensorName']
-            mq.send(topic, json.dumps(d))
+            if 'measurement' in d:
+                topic = mq_topic + '/' + d['measurement'] + '/' + d['tags']['sensorName']
+                mq.send(topic, json.dumps(d))
+            else:
+                print("Skipping empty measurement")
 
         time.sleep(60)
 

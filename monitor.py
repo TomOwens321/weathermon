@@ -23,7 +23,7 @@ s = threading.Thread(target=run_sh)
 w = threading.Thread(target=run_wi)
 b = threading.Thread(target=run_ba)
 
-o.start()
+# o.start()
 s.start()
 w.start()
 b.start()
