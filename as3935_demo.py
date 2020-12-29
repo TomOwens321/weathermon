@@ -20,7 +20,7 @@ event = {'distance': 100, 'energy': 0}
 
 l_count, d_count, n_count = 0, 0, 0
 
-db = Influxdb(host='rpi4b-1', port='8086')
+db = Influxdb(host='knode', port='8086')
 db_client = db.client()
 mq_topic = 'sun-chaser/lightning'
 mq = Mqtt('192.168.1.10')

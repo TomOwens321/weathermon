@@ -10,7 +10,7 @@ from lib.influxdb import Influxdb
 MQTT_TOPIC = 'sun-chaser/weather'
 mq = Mqtt('192.168.1.10')
 
-db = Influxdb(host='rpi4b-1.ourhouse', port='8086')
+db = Influxdb(host='knode.ourhouse', port='8086')
 db_client = db.client()
 
 def get_pressure(sensor):

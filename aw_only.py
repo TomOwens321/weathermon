@@ -21,7 +21,7 @@ MEASUREMENTS = {
 
 aw = AmbientWeather(secrets.AMBIENT_API_KEY, secrets.AMBIENT_APPLICATION_KEY)
 mq = Mqtt('192.168.1.10')
-db = Influxdb(host='rpi4b-1.ourhouse', port='8086')
+db = Influxdb(host='knode.ourhouse', port='8086')
 db_client = db.client()
 
 def type_adjustments(raw):

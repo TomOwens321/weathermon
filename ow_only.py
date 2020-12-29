@@ -9,7 +9,7 @@ from lib.ownet import Ownet
 
 HOSTS=['greenhousepi']
 
-db = Influxdb(host='rpi4b-1.ourhouse', port='8086')
+db = Influxdb(host='knode.ourhouse', port='8086')
 db_client = db.client()
 
 mq = Mqtt('192.168.1.10')
