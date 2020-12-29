@@ -58,9 +58,9 @@ def package_kabooms():
     global event_counter, n_count, d_count, l_count
     data = []
     for k in kaboom:
-        reading = {'measurement': 'weathermon'}
+        reading = {'measurement': 'lightning'}
         reading['time'] = k['time']
-        reading['tags'] = {'sensorName': 'AS3935', 'sensorLocation': 'Ourhouse'}
+        reading['tags'] = {'sensorName': 'Lightning_Monitor', 'sensorType': 'AS3935', 'sensorLocation': 'Office'}
         reading['fields'] = {
             'timestamp': k['timestamp'],
             'distance': k['distance'],
@@ -69,8 +69,8 @@ def package_kabooms():
         }
         data.append(reading)
 
-    reading = {'measurement': 'weathermon'}
-    reading['tags'] = {'sensorName': 'AS3935', 'sensorLocation': 'Ourhouse'}
+    reading = {'measurement': 'lightning'}
+    reading['tags'] = {'sensorName': 'Lightning_Monitor', 'sensorType': 'AS3935', 'sensorLocation': 'Office'}
     reading['fields'] = {
         'noise': event_counter[1],
         'disturber': event_counter[4],
@@ -107,7 +107,7 @@ def adjust_watchdog_threshold():
         lightning.watchdog_threshold = w_dog - 1
         lightning.calibrate()
 
-setup_db(db_client)
+# setup_db(db_client)
 
 lightning = AS3935(SPI_CHANNEL)
 lightning.reset()
@@ -174,7 +174,7 @@ while True:
     # send kabooms to Influx
     kdata = package_kabooms()
     try:
-        db_client.write_points(kdata, database='sensors_test', retention_policy='oneday')
+        db_client.write_points(kdata, database='weather_data', retention_policy='one_year')
     except:
         print("Error communicating with InfluxDb. Skipping")
 
