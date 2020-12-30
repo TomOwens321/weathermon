@@ -13,7 +13,7 @@ db = Influxdb(host='knode.ourhouse', port='8086')
 db_client = db.client()
 
 mq = Mqtt('192.168.1.10')
-mq_topic = 'sun-chaser/testing'
+mq_topic = 'sun-chaser/weather'
 
 def scan_1w_devices(hosts, sensors):
 
