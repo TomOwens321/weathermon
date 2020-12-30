@@ -8,7 +8,7 @@ from lib.influxdb import Influxdb
 from lib.ad import ADS1015
 from lib.anemometer import Anemometer
 
-db = Influxdb(host='rpi4b-1.ourhouse', port='8086')
+db = Influxdb(host='knode.ourhouse', port='8086')
 db_client = db.client()
 
 MQTT_TOPIC = 'sun-chaser/weather'

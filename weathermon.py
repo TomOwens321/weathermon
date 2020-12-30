@@ -12,7 +12,7 @@ from lib.anemometer import Anemometer
 from lib.influxdb import Influxdb
 from lib.ownet import Ownet
 
-db = Influxdb(host='rpi4b-1', port='8086')
+db = Influxdb(host='knode', port='8086')
 client = db.client()
 
 mq_topic = 'sun-chaser/weather/rpi'

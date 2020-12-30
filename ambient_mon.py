@@ -10,7 +10,7 @@ MQTT_TOPIC = 'sun-chaser/weather/ambientweather'
 
 aw = AmbientWeather(secrets.AMBIENT_API_KEY, secrets.AMBIENT_APPLICATION_KEY)
 mq = Mqtt('192.168.1.10')
-db = Influxdb(host='rpi4b-1', port='8086')
+db = Influxdb(host='knode', port='8086')
 db_client = db.client()
 
 def type_adjustments(raw):
