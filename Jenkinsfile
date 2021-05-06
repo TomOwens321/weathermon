@@ -1,7 +1,5 @@
 pipeline {
-    agent  {
-        docker { image 'python:3.7-alpine'}
-    }
+    agent  { ('any') }
 
     stages {
         stage ('Test') {
