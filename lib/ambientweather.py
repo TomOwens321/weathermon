@@ -25,6 +25,10 @@ class AmbientWeather():
         return asyncio.run(self._get_current())
 
     def get_full_day(self):
-        current = asyncio.run(self._get_current())
-        mac = current[0]['macAddress']
-        return asyncio.run(self._get_full_day(mac))
+        try:
+            current = asyncio.run(self._get_current())
+            mac = current[0]['macAddress']
+            return asyncio.run(self._get_full_day(mac))
+        except:
+            print("Error comminicating with AmbientWeather")
+            return []
