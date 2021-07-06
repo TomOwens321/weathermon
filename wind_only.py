@@ -41,7 +41,7 @@ def get_average(readings, max=50):
 def main():
     an = Anemometer(17)
     dr = ADS1015()
-    mq = Mqtt('192.168.1.10')
+    mq = Mqtt('192.168.1.104')
     wind_avg = []
     winddir_avg = []
 
