@@ -20,7 +20,7 @@ MEASUREMENTS = {
 }
 
 aw = AmbientWeather(secrets.AMBIENT_API_KEY, secrets.AMBIENT_APPLICATION_KEY)
-mq = Mqtt('192.168.1.10')
+mq = Mqtt('rpi4b-1.ourhouse')
 db = Influxdb(host='knode.ourhouse', port='8086')
 db_client = db.client()
 
@@ -30,9 +30,14 @@ def type_adjustments(raw):
             raw[key] = float(raw[key])
 
     # Currently there are no celsius fields, let's add them
-    if 'tempc' not in raw:
-        raw['tempc'] = round((raw['tempf'] - 32) * (5 / 9), 1)
-        raw['tempinc'] = round((raw['tempinf'] - 32) * (5 / 9), 1)
+    try:
+        if 'tempc' not in raw:
+            raw['tempc'] = round((raw['tempf'] - 32) * (5 / 9), 1)
+            raw['tempinc'] = round((raw['tempinf'] - 32) * (5 / 9), 1)
+    except:
+        print("Possible data corruption")
+        print(raw)
+
     return raw
 
 def create_influx_data(raw):
@@ -62,24 +67,29 @@ def create_influx_data(raw):
         data['tags'] = {'sensorLocation': location, 'sensorType': 'AW-2000', 'sensorName': name}
 
         # field renaming for consistency with other products
-        for field in MEASUREMENTS[key]:
-            f_name = field
-            if f_name == 'tempinf':
-                f_name = 'tempf'
-            elif f_name == 'tempinc':
-                f_name = 'tempc'
-            elif f_name == 'feelsLikein':
-                f_name = 'feelsLike'
-            elif f_name == 'dewPointin':
-                f_name = 'dewPoint'
-            elif f_name == 'humidityin':
-                f_name = 'humidity'
-            elif f_name == 'baromabsin':
-                f_name = 'raw_inhg'
-            elif f_name == 'baromrelin':
-                f_name = 'pressure'
+        try:
+            for field in MEASUREMENTS[key]:
+                f_name = field
+                if f_name == 'tempinf':
+                    f_name = 'tempf'
+                elif f_name == 'tempinc':
+                    f_name = 'tempc'
+                elif f_name == 'feelsLikein':
+                    f_name = 'feelsLike'
+                elif f_name == 'dewPointin':
+                    f_name = 'dewPoint'
+                elif f_name == 'humidityin':
+                    f_name = 'humidity'
+                elif f_name == 'baromabsin':
+                    f_name = 'raw_inhg'
+                elif f_name == 'baromrelin':
+                    f_name = 'pressure'
 
-            fields[f_name] = raw[field]
+                fields[f_name] = raw[field]
+        except:
+            print("Possible data corruption")
+            print(raw)
+            return []
         data['fields'] = fields
         measurements.append(data)
     # print(measurements)
