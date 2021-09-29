@@ -7,7 +7,7 @@ from lib.mqtt import Mqtt
 from lib.influxdb import Influxdb
 from lib.ownet import Ownet
 
-HOSTS=['greenhousepi']
+HOSTS=['localhost']
 
 db = Influxdb(host='knode.ourhouse', port='8086')
 db_client = db.client()
