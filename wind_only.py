@@ -66,6 +66,8 @@ def main():
         today = datetime.date.today().day
         if today != last_day:
             max_daily_gust = 0.0
+            an.reset_gust()
+            wind['fields']['maxdailygust'] = max_daily_gust
             wind['fields']['windgustmph'] = max_daily_gust
             last_day = today
 
