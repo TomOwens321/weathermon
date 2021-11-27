@@ -18,14 +18,14 @@ def json_to_influx(data):
     reading['tags'] = {'sensorName': 'OpenWeatherMap', 'sensorLocation': 'Platteville', 'sensorType': 'Web'}
     reading['fields'] = {
         'aqi': aqi,
-        'co': components['co'],
-        'no': components['no'],
-        'no2': components['no2'],
-        'o3': components['o3'],
-        'so2': components['so2'],
-        'pm2_5': components['pm2_5'],
-        'pm10': components['pm10'],
-        'nh3': components['nh3']
+        'co': float(components['co']),
+        'no': float(components['no']),
+        'no2': float(components['no2']),
+        'o3': float(components['o3']),
+        'so2': float(components['so2']),
+        'pm2_5': float(components['pm2_5']),
+        'pm10': float(components['pm10']),
+        'nh3': float(components['nh3'])
     }
     # reading['timestamp'] = data['list'][0]['dt'] * 1000000000
     return reading
