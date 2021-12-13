@@ -2,7 +2,7 @@ import influxdb
 
 class Influxdb():
 
-    def __init__(self, host='rpi4b-1.ourhouse', port='8086'):
+    def __init__(self, host='knode.ourhouse', port='8086'):
         self.host = host
         self.port = port
 
