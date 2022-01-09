@@ -29,9 +29,9 @@ def get_measurement():
     }
     return reading
 
-def run():
-    data = []
+def run():    
     while True:
+        data = []
         reading = get_measurement()
         data.append(reading)
         db_client.write_points(data, database='weather_data', retention_policy='one_year')
