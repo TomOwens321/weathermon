@@ -117,6 +117,7 @@ def main():
         print("Found {} readings.".format(len(readings)))
         for reading in readings:
             data = create_influx_data(reading['lastData'])
+            print(data)
             db_client.write_points(data, database='weather_data', retention_policy='one_year')
             for d in data:
                 topic = MQTT_TOPIC + '/' + d['measurement'] + '/' + d['tags']['sensorName']
