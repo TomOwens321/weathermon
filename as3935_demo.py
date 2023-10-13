@@ -23,7 +23,7 @@ l_count, d_count, n_count = 0, 0, 0
 db = Influxdb(host='knode', port='8086')
 db_client = db.client()
 mq_topic = 'sun-chaser/lightning'
-mq = Mqtt('192.168.1.10')
+mq = Mqtt('rpi4b-1.ourhouse')
 
 kaboom = []
 

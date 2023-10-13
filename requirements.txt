@@ -16,6 +16,7 @@ python-dateutil==2.8.1
 pytz==2020.1
 requests==2.24.0
 RPi.GPIO==0.7.0
+sds011==0.2.0
 six==1.15.0
 smbus==1.1.post2
 spidev==3.5
