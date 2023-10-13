@@ -19,7 +19,7 @@ MEASUREMENTS = {
     'rain': ['hourlyrainin', 'eventrainin', 'dailyrainin', 'weeklyrainin', 'monthlyrainin', 'yearlyrainin']
 }
 
-aw = AmbientWeather(secrets.AMBIENT_API_KEY, secrets.AMBIENT_APPLICATION_KEY)
+aw = AmbientWeather()
 mq = Mqtt('rpi4b-1.ourhouse')
 db = Influxdb(host='knode.ourhouse', port='8086')
 db_client = db.client()
@@ -49,17 +49,17 @@ def create_influx_data(raw):
         location = 'RoofTop'
         name = 'Ambient_Outdoor'
         measurement = key
-        
+
         if key == 'temperaturein':
             location = 'Inside'
             measurement = 'temperature'
             name = 'Ambient_Indoor'
-        
+
         if key == 'humidityin':
             location = 'Inside'
             measurement = 'humidity'
             name = 'Ambient_Indoor'
-        
+
         data = {}
         fields = {}
         data['measurement'] = measurement
@@ -116,13 +116,16 @@ def main():
         readings = get_current()
         print("Found {} readings.".format(len(readings)))
         for reading in readings:
-            data = create_influx_data(reading['lastData'])
-            print(data)
-            db_client.write_points(data, database='weather_data', retention_policy='one_year')
-            for d in data:
-                topic = MQTT_TOPIC + '/' + d['measurement'] + '/' + d['tags']['sensorName']
-                mq.send(topic, json.dumps(d))
-        
+            try:
+                data = create_influx_data(reading['lastData'])
+                print(data)
+                db_client.write_points(data, database='weather_data', retention_policy='one_year')
+                for d in data:
+                    topic = MQTT_TOPIC + '/' + d['measurement'] + '/' + d['tags']['sensorName']
+                    mq.send(topic, json.dumps(d))
+            except:
+                print('No valid data found')
+
         time.sleep(60)
 
 if __name__ == '__main__':
