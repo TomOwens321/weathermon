@@ -1,34 +1,29 @@
-import asyncio
-from aioambient import Client
+import requests
+import secrets
 
 class AmbientWeather():
-    def __init__(self, api_key, app_key):
-        self.client = Client(api_key, app_key)
-
-    async def _get_current(self):
-        try:
-            data = await self.client.api.get_devices()
-        except:
-            print("Error communicating with AmbientWeather")
-            return []
-        return data
-    
-    async def _get_full_day(self, dev):
-        try:
-            data = await self.client.api.get_device_details(dev)
-        except:
-            print("Error communicating with AmbientWeather")
-            return []
-        return data
+    def __init__(self):
+        self.api_key = secrets.AMBIENT_API_KEY
+        self.app_key = secrets.AMBIENT_APPLICATION_KEY
+        self.url = secrets.AMBIENT_ENDPOINT
+        self.dev = secrets.MAC_ADDRESS
 
     def get_current(self):
-        return asyncio.run(self._get_current())
+        data = {}
+        try:
+            url = f'{self.url}/devices?applicationKey={self.app_key}&apiKey={self.api_key}'
+            resp = requests.get(url, timeout=1)
+            data = resp.json()
+        except Exception as exc:
+            print(f'Failed communicating with {self.url}')
+        return data
 
     def get_full_day(self):
+        data = {}
         try:
-            current = asyncio.run(self._get_current())
-            mac = current[0]['macAddress']
-            return asyncio.run(self._get_full_day(mac))
-        except:
-            print("Error comminicating with AmbientWeather")
-            return []
+            url = f'{self.url}/devices/{self.dev}?applicationKey={self.app_key}&apiKey={self.api_key}'
+            resp = requests.get(url, timeout=2)
+            data = resp.json()
+        except Exception as exc:
+            print(f'Failed communicating with {self.url}')
+        return data
