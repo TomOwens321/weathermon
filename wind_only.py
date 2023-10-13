@@ -41,7 +41,7 @@ def get_average(readings, max=50):
 def main():
     an = Anemometer(17)
     dr = ADS1015()
-    mq = Mqtt('192.168.1.10')
+    mq = Mqtt('192.168.1.104')
     wind_avg = []
     winddir_avg = []
 
@@ -65,7 +65,11 @@ def main():
 
         today = datetime.date.today().day
         if today != last_day:
+            print("Resetting gust data for a new day")
             max_daily_gust = 0.0
+            an.reset_gust()
+            wind['fields']['maxdailygust'] = max_daily_gust
+            wind['fields']['windgustmph'] = max_daily_gust
             last_day = today
 
         if wind['fields']['windgustmph'] > max_daily_gust:
