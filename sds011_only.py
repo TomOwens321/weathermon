@@ -6,7 +6,7 @@ from lib.influxdb import Influxdb
 PORT = "/dev/ttyUSB0"
 RATE = 10
 
-sds = SDS011(port=PORT, rate=RATE, use_database=False)
+sds = SDS011(port=PORT, rate=RATE, use_database=True)
 sds.set_working_period(rate=RATE)
 print(sds)
 
