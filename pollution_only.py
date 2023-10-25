@@ -1,10 +1,16 @@
+#1/usr/bin/env python3
+
 import time
+import json
+from lib.mqtt import Mqtt
 from lib.owm_quality import OwmPollution
 from lib.influxdb import Influxdb
 
 owm = OwmPollution()
 db = Influxdb(host='knode.ourhouse', port='8086')
 db_client = db.client()
+MQTT_TOPIC = 'sun-chaser/weather'
+mq = Mqtt('rpi4b-1.ourhouse')
 
 def get_owm_pollution():
     return owm.get_air_quality()
@@ -36,6 +42,11 @@ def main():
         pollution = get_owm_pollution()
         data.append(json_to_influx(pollution))
         db_client.write_points(data, database='weather_data', retention_policy='one_year')
+
+        for d in data:
+                topic = MQTT_TOPIC + '/' + d['measurement'] + '/' + d['tags']['sensorName']
+                mq.send(topic, json.dumps(d))
+
         print(data)
         time.sleep(1800)
 
