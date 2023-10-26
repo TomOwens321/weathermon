@@ -22,7 +22,7 @@ l_count, d_count, n_count = 0, 0, 0
 
 db = Influxdb(host='knode', port='8086')
 db_client = db.client()
-mq_topic = 'sun-chaser/lightning'
+mq_topic = 'sun-chaser/weather'
 mq = Mqtt('rpi4b-1.ourhouse')
 
 kaboom = []
@@ -179,7 +179,10 @@ while True:
         print("Error communicating with InfluxDb. Skipping")
 
     print(kdata)
-    mq.send(mq_topic, json.dumps(kdata))
+    for d in kdata:
+        topic = mq_topic + '/' + d['measurement'] + '/' + d['tags']['sensorName']
+        mq.send(topic, json.dumps(d))
+    # mq.send(mq_topic, json.dumps(kdata))
     kaboom = []
 
     if loop_count == 10:
