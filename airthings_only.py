@@ -80,6 +80,21 @@ def get_readings(device):
     }
     data.append(reading)
 
+    # Add readings to air_quality measurement
+    reading = {}
+    reading['measurement'] = 'air_quality'
+    reading['time'] = datetime.utcnow().isoformat() + 'Z'
+    reading['tags'] = {'sensorName': 'AirThings', 'sensorLocation': 'Basement', 'sensorType': 'WavePlus'}
+    reading['fields'] = {
+        'co2': sensor_data.sensor_data[5],
+        'voc': sensor_data.sensor_data[6],
+        'radon_short_term': sensor_data.sensor_data[1],
+        'radon_long_term': sensor_data.sensor_data[2],
+        'short_term_radon_us': round(sensor_data.sensor_data[1] / 37.0,1),
+        'long_term_radon_us':  round(sensor_data.sensor_data[2] / 37.0,1)
+    }
+    data.append(reading)
+
     return data
 
 def run():
