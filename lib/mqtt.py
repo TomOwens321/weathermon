@@ -5,7 +5,7 @@ class Mqtt(object):
 
     def __init__(self, host):
         self.host = host
-        self.client = Client()
+        self.client = Client(client_id="weathermon", protocol=5)
 
     def send(self, topic, payload):
         try:

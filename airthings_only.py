@@ -47,6 +47,16 @@ def get_readings(device):
     }
     data.append(reading)
 
+    # Get the pressure reading from AirThings
+    reading = {}
+    reading['measurement'] = 'barometer'
+    reading['time'] = datetime.utcnow().isoformat() + 'Z'
+    reading['tags'] = {'sensorName': 'AirThings', 'sensorLocation': 'Basement', 'sensorType': 'WavePlus'}
+    reading['fields'] = {
+        'raw_inhg': round(sensor_data.sensor_data[4], 2),
+        'pressure': conv.adjust_for_altitude(sensor_data.sensor_data[4])
+    }
+
     # Get the radon readings from AirThings
     reading = {}
     reading['measurement'] = 'radon'
