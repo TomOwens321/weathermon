@@ -2,6 +2,7 @@
 
 import time
 import json
+from datetime import datetime
 from lib.mqtt import Mqtt
 from lib.owm_quality import OwmPollution
 from lib.influxdb import Influxdb
@@ -21,6 +22,7 @@ def json_to_influx(data):
     aqi = data['list'][0]['main']['aqi']
     components = data['list'][0]['components']
     reading['measurement'] = 'air_quality'
+    reading['time'] = datetime.utcnow().isoformat() + 'Z'
     reading['tags'] = {'sensorName': 'OpenWeatherMap', 'sensorLocation': 'Platteville', 'sensorType': 'Web'}
     reading['fields'] = {
         'aqi': aqi,

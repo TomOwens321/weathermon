@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+from datetime import datetime
 from sds011 import SDS011
 from lib.mqtt import Mqtt
 from lib.influxdb import Influxdb
@@ -25,6 +26,7 @@ def get_measurement():
     values = [str(measurement.get(key)) for key in log_columns]
 
     reading['measurement'] = 'air_quality'
+    reading['time'] = datetime.utcnow().isoformat() + 'Z'
     reading['tags'] = {'sensorName': 'SDS011', 'sensorLocation': 'OurHouse', 'sensorType': 'SDS011'}
     reading['fields'] = {
         'pm2_5': float(values[1]),
