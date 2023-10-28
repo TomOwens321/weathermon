@@ -70,6 +70,7 @@ def package_kabooms():
         data.append(reading)
 
     reading = {'measurement': 'lightning'}
+    reading['time'] = datetime.utcnow().isoformat() + 'Z'
     reading['tags'] = {'sensorName': 'Lightning_Monitor', 'sensorType': 'AS3935', 'sensorLocation': 'Office'}
     reading['fields'] = {
         'noise': event_counter[1],
