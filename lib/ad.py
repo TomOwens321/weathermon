@@ -91,7 +91,7 @@ class ADS1015(object):
         val=(Val_H<<8)|Val_L
         self._bus.write_word_data(self._address,cmd,val)
     def direction(self):
-        value = self.ADS1015_SINGLE_READ()
+        value = self.ADS1015_SINGLE_READ(channel=1)
         return self.wv.direction_text(value)
 
 if __name__ == '__main__':
@@ -102,7 +102,7 @@ if __name__ == '__main__':
     if(state!=0x8000):
         print("\nADS1015 Error\n")
     while True:
-        time.sleep(0.5)
+        time.sleep(1.5)
         AIN0_DATA=ads1015.ADS1015_SINGLE_READ(0)
         AIN1_DATA=ads1015.ADS1015_SINGLE_READ(1)
         AIN2_DATA=ads1015.ADS1015_SINGLE_READ(2)

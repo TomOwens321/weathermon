@@ -41,7 +41,7 @@ def get_average(readings, max=50):
 def main():
     an = Anemometer(17)
     dr = ADS1015()
-    mq = Mqtt('192.168.1.104')
+    mq = Mqtt('rpi4b-1.ourhouse')
     wind_avg = []
     winddir_avg = []
 
@@ -76,6 +76,7 @@ def main():
             max_daily_gust = wind['fields']['windgustmph']
         
         wind['fields']['maxdailygust'] = max_daily_gust
+        wind['time'] = datetime.datetime.utcnow().isoformat() + 'Z'
 
         data.append(wind)
         print(data)
