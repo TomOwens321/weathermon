@@ -33,6 +33,8 @@ def get_readings(device):
         sensor_data['dps']['20']
         sensor_data['dps']['21']
         sensor_data['dps']['22']
+        sensor_data['dps']['101']
+        sensor_data['dps']['102']
     except:
         print(f'Error getting Air Quality data: {sensor_data}')
         return False
@@ -47,7 +49,9 @@ def get_readings(device):
         'co2': float(sensor_data['dps']['2']),
         'pm2_5': float(sensor_data['dps']['20']),
         'voc': float(sensor_data['dps']['21']),
-        'hcho': float(sensor_data['dps']['22'])
+        'hcho': float(sensor_data['dps']['22']),
+        'pm10': float(sensor_data['dps']['101']),
+        'pm1': float(sensor_data['dps']['102'])
     }
     data.append(reading)
 
