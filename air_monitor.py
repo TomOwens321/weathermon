@@ -9,6 +9,7 @@ import tinytuya
 from datetime import datetime
 from lib.mqtt import Mqtt
 from lib.influxdb import Influxdb
+import lib.conversions as conv
 
 MQTT_TOPIC = 'sun-chaser/weather'
 mq = Mqtt('rpi4b-1.ourhouse')
@@ -27,12 +28,13 @@ def get_readings(device):
 
     try:
         sensor_data['dps']['2']
+        sensor_data['dps']['18']
         sensor_data['dps']['19']
         sensor_data['dps']['20']
         sensor_data['dps']['21']
         sensor_data['dps']['22']
     except:
-        print('Error getting Air Quality data')
+        print(f'Error getting Air Quality data: {sensor_data}')
         return False
 
 
@@ -76,6 +78,17 @@ def get_readings(device):
     reading['tags'] = {'sensorName': 'Sniff', 'sensorLocation': 'Bedroom', 'sensorType': 'AirDetector'}
     reading['fields'] = {
         'formaldehyde': sensor_data['dps']['22']
+    }
+    data.append(reading)
+
+    # Get the temperature reading
+    reading = {}
+    reading['measurement'] = 'temperature'
+    reading['time'] = datetime.utcnow().isoformat() + 'Z'
+    reading['tags'] = {'sensorName': 'Sniff', 'sensorLocation': 'Bedroom', 'sensorType': 'AirDetector'}
+    reading['fields'] = {
+        'tempc': float(sensor_data['dps']['18']),
+        'tempf': float(conv.c_to_f(sensor_data.sensor_data['dps']['18']))
     }
     data.append(reading)
 
