@@ -88,7 +88,7 @@ def get_readings(device):
     reading['tags'] = {'sensorName': 'Sniff', 'sensorLocation': 'Bedroom', 'sensorType': 'AirDetector'}
     reading['fields'] = {
         'tempc': float(sensor_data['dps']['18']),
-        'tempf': float(conv.c_to_f(sensor_data.sensor_data['dps']['18']))
+        'tempf': float(conv.c_to_f(sensor_data['dps']['18']))
     }
     data.append(reading)
 
