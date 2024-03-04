@@ -85,7 +85,7 @@ def get_readings(device):
     reading['time'] = datetime.utcnow().isoformat() + 'Z'
     reading['tags'] = {'sensorName': 'Sniff', 'sensorLocation': 'Bedroom', 'sensorType': 'AirDetector'}
     reading['fields'] = {
-        'humidity': sensor_data['dps']['19']
+        'humidity': float(sensor_data['dps']['19'])
     }
     data.append(reading)
 
