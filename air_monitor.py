@@ -18,21 +18,23 @@ db_client = db.client()
 
 def get_readings(device):
     data = []
-    sensor_data = device.status()
 
-    if not sensor_data.get('dps', False):
-        print(sensor_data)
+    try:
+        sensor_data = device.status()
+    except:
+        print('Error getting sensor data')
         return False
 
-    # Get the CO2 reading
-    reading = {}
-    reading['measurement'] = 'co2'
-    reading['time'] = datetime.utcnow().isoformat() + 'Z'
-    reading['tags'] = {'sensorName': 'Sniff', 'sensorLocation': 'Bedroom', 'sensorType': 'AirDetector'}
-    reading['fields'] = {
-        'carbon_dioxide': float(sensor_data['dps']['2'])
-    }
-    data.append(reading)
+    try:
+        sensor_data['dps']['2']
+        sensor_data['dps']['19']
+        sensor_data['dps']['20']
+        sensor_data['dps']['21']
+        sensor_data['dps']['22']
+    except:
+        print('Error getting Air Quality data')
+        return False
+
 
     # Get the Air Quality reading
     reading = {}
@@ -44,6 +46,16 @@ def get_readings(device):
         'pm2_5': float(sensor_data['dps']['20']),
         'voc': float(sensor_data['dps']['21']),
         'hcho': float(sensor_data['dps']['22'])
+    }
+    data.append(reading)
+
+    # Get the CO2 reading
+    reading = {}
+    reading['measurement'] = 'co2'
+    reading['time'] = datetime.utcnow().isoformat() + 'Z'
+    reading['tags'] = {'sensorName': 'Sniff', 'sensorLocation': 'Bedroom', 'sensorType': 'AirDetector'}
+    reading['fields'] = {
+        'carbon_dioxide': float(sensor_data['dps']['2'])
     }
     data.append(reading)
 
@@ -67,6 +79,16 @@ def get_readings(device):
     }
     data.append(reading)
 
+    # Get the humidity reading
+    reading = {}
+    reading['measurement'] = 'humidity'
+    reading['time'] = datetime.utcnow().isoformat() + 'Z'
+    reading['tags'] = {'sensorName': 'Sniff', 'sensorLocation': 'Bedroom', 'sensorType': 'AirDetector'}
+    reading['fields'] = {
+        'humidity': sensor_data['dps']['19']
+    }
+    data.append(reading)
+
     return data
 
 def _get_air_detector_device():
@@ -79,6 +101,8 @@ def _get_air_detector_device():
                               address=dev['ip'],
                               local_key=dev['key'],
                               version=dev['version'])
+    air_mon.set_version(3.3)
+    air_mon.set_socketPersistent(False)
     return air_mon
 
 if __name__ == "__main__":
