@@ -35,7 +35,7 @@ def type_adjustments(raw):
             raw['tempc'] = round((raw['tempf'] - 32) * (5 / 9), 1)
             raw['tempinc'] = round((raw['tempinf'] - 32) * (5 / 9), 1)
     except:
-        print("Possible data corruption")
+        print("[type_adjustments] Possible data corruption")
         print(raw)
 
     return raw
@@ -84,7 +84,7 @@ def create_influx_data(raw):
 
                 fields[f_name] = raw[field]
         except:
-            print("Possible data corruption")
+            print("[create_influx_data] Possible data corruption")
             print(raw)
             return []
         data['fields'] = fields
@@ -115,7 +115,7 @@ def main():
         for reading in readings:
             try:
                 data = create_influx_data(reading['lastData'])
-                print(data)
+                # print(data)
                 db_client.write_points(data, database='weather_data', retention_policy='one_year')
                 for d in data:
                     topic = MQTT_TOPIC + '/' + d['measurement'] + '/' + d['tags']['sensorName']

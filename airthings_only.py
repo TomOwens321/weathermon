@@ -26,6 +26,8 @@ def get_readings(device):
     except:
         return False
 
+    print(sensor_data.sensor_data)
+
     # Get the humidity reading from AirThings
     reading = {}
     reading['measurement'] = 'humidity'
@@ -55,7 +57,7 @@ def get_readings(device):
     reading['tags'] = {'sensorName': 'AirThings', 'sensorLocation': 'Basement', 'sensorType': 'WavePlus'}
     reading['fields'] = {
         'raw_inhg': round(rawhg, 2),
-        'pressure': round(conv.hpa_to_inhg(conv.adjust_for_altitude(sensor_data.sensor_data[4], alt=4836)), 2)
+        'pressure': round(conv.hpa_to_inhg(conv.adjust_for_altitude(sensor_data.sensor_data[4], alt=4950)), 2)
     }
     data.append(reading)
 

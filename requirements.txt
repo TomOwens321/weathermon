@@ -9,14 +9,14 @@ isort==4.3.21
 lazy-object-proxy==1.4.3
 mccabe==0.6.1
 msgpack==0.6.1
-paho-mqtt==1.5.0
+paho-mqtt==2.0.0
 pylint==2.5.3
 pyownet==0.10.0.post1
 python-dateutil==2.8.1
 pytz==2020.1
 requests==2.31.0
 RPi.GPIO==0.7.0
-sds011==0.2.0
+# sds011==0.2.0
 six==1.15.0
 smbus==1.1.post2
 spidev==3.5
