@@ -50,7 +50,6 @@ def run(ser):
             resistance = float(line.split(':')[5])
             rzero = float(line.split(':')[1])
             # ppm = float(line.split(':')[7])
-            print(f'Temperature: {temperature} | Humidity {humidity} | Resistance: {resistance}')
             ppm = round(conv.get_corrected_pm(temperature, humidity, resistance, rzero), 2)
         except:
             print(f'Error: {line}')
@@ -59,6 +58,7 @@ def run(ser):
         if ppm > maxPPM:
             maxPPM = ppm
             print(line)
+            print(f'Temperature: {temperature} | Humidity {humidity} | Resistance: {resistance} | Rzero: {rzero}')
 
         if time.time() - start > 60:
             print(f'Max PPM: {maxPPM}')
