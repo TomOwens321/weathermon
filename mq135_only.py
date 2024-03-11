@@ -50,7 +50,7 @@ def run(ser):
             resistance = float(line.split(':')[5])
             # ppm = float(line.split(':')[7])
             print(f'Temperature: {temperature} | Humidity {humidity} | Resistance: {resistance}')
-            ppm = conv.get_corrected_pm(temperature, humidity, resistance)
+            ppm = round(conv.get_corrected_pm(temperature, humidity, resistance), 2)
         except:
             print(f'Error: {line}')
             continue
@@ -81,6 +81,7 @@ def on_connect(client, userdata, flags, rc, properties=None):
         print('Connection failed')
 
 def on_message(client, userdata, message):
+    global temperature, humidity
     print(f'{message.topic}: {message.payload}')
     msg = json.loads(message.payload)
     if message.topic == MQTT_TEMPERATURE_TOPIC:
