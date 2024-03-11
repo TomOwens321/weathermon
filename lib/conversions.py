@@ -35,5 +35,5 @@ def get_correction_factor(temperature, humidity):
 def get_corrected_resistance(temperature, humidity, resistance):
     return resistance / get_correction_factor(temperature, humidity)
 
-def get_corrected_pm(temperature, humidity, resistance):
-    return PARA * pow((get_corrected_resistance(temperature, humidity, resistance) / RZERO), -PARB)
+def get_corrected_pm(temperature, humidity, resistance, rzero):
+    return PARA * pow((get_corrected_resistance(temperature, humidity, resistance) / rzero), -PARB)

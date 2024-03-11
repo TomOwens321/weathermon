@@ -48,9 +48,10 @@ def run(ser):
 
         try:
             resistance = float(line.split(':')[5])
+            rzero = float(line.split(':')[1])
             # ppm = float(line.split(':')[7])
             print(f'Temperature: {temperature} | Humidity {humidity} | Resistance: {resistance}')
-            ppm = round(conv.get_corrected_pm(temperature, humidity, resistance), 2)
+            ppm = round(conv.get_corrected_pm(temperature, humidity, resistance, rzero), 2)
         except:
             print(f'Error: {line}')
             continue
