@@ -8,7 +8,7 @@ from lib.mqtt import Mqtt
 from lib.influxdb import Influxdb
 
 MQTT_TOPIC = 'sun-chaser/weather'
-mq = Mqtt('192.168.1.104')
+mq = Mqtt('rpi4b-1.ourhouse')
 
 db = Influxdb(host='knode.ourhouse', port='8086')
 db_client = db.client()
@@ -16,7 +16,7 @@ db_client = db.client()
 def get_pressure(sensor):
     reading = {}
     pr = sensor.pressure()
-    adjusted_pr = conv.adjust_for_altitude(pr)
+    adjusted_pr = conv.adjust_for_altitude(pr, 4870)
 
     reading['measurement'] = 'barometer'
     reading['tags'] = {'sensorType': 'LPS22HB', 'sensorLocation': 'Wellhouse', 'sensorName': 'WH Pressure'}
