@@ -3,9 +3,9 @@ import paho.mqtt.client as mqtt
 
 class Mqtt(object):
 
-    def __init__(self, host):
+    def __init__(self, host, client_id="weathermon"):
         self.host = host
-        self.client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id="weathermon", protocol=5)
+        self.client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id, protocol=5)
 
     def send(self, topic, payload):
         try:
