@@ -1,6 +1,6 @@
 certifi==2024.2.2
 charset-normalizer==3.3.2
-idna==3.6
+idna==3.7
 influxdb==5.3.1
 msgpack==1.0.7
 paho-mqtt==2.0.0
