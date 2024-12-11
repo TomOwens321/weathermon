@@ -17,5 +17,5 @@ six==1.15.0
 tinytuya==1.13.2
 toml==0.10.1
 # typed-ast==1.4.1
-urllib3==1.26.18
+urllib3==1.26.19
 wrapt==1.12.1
