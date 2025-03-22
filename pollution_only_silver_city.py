@@ -4,7 +4,7 @@ import time
 import json
 from datetime import datetime
 from lib.mqtt import Mqtt
-from lib.owm_quality_Silver_city import OwmPollution
+from lib.owm_quality_silver_city import OwmPollution
 from lib.influxdb import Influxdb
 
 owm = OwmPollution()
