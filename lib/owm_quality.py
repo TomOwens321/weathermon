@@ -17,7 +17,7 @@ class OwmPollution:
         if lat and lon:
             self.URI = self.build_uri(lat, lon)
         try:
-            print(self.URI)
+            # print(self.URI)
             response = requests.get(self.URI)
         except:
             print("Error in request")
