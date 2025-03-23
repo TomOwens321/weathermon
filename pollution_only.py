@@ -13,17 +13,25 @@ db_client = db.client()
 MQTT_TOPIC = 'sun-chaser/weather'
 mq = Mqtt('rpi4b-1.ourhouse')
 
-def get_owm_pollution():
-    return owm.get_air_quality()
+# list of lat/lon pairs for the cities
+cities = [
+    {'lat': '40.242151', 'lon': '-104.773687', 'name': 'Platteville'}, # Platteville
+    {'lat': '32.778481', 'lon': '-108.273811', 'name': 'SilverCity'},  # Silver City
+    {'lat': '38.453327', 'lon': '-105.240667', 'name': 'CanyonCity'}   # Canyon City
+]
 
-def json_to_influx(data):
+def get_owm_pollution(lat, lon):
+    return owm.get_air_quality(lat, lon)
+
+def json_to_influx(data, tags):
     reading = {}
     # print(type(data))
     aqi = data['list'][0]['main']['aqi']
     components = data['list'][0]['components']
     reading['measurement'] = 'air_quality'
     reading['time'] = datetime.utcnow().isoformat() + 'Z'
-    reading['tags'] = {'sensorName': 'OpenWeatherMap', 'sensorLocation': 'Platteville', 'sensorType': 'Web'}
+    # reading['tags'] = {'sensorName': 'OpenWeatherMap', 'sensorLocation': 'Platteville', 'sensorType': 'Web'}
+    reading['tags'] = tags
     reading['fields'] = {
         'aqi': aqi,
         'co': float(components['co']),
@@ -40,16 +48,23 @@ def json_to_influx(data):
 
 def main():
     while True:
-        data = []
-        pollution = get_owm_pollution()
-        data.append(json_to_influx(pollution))
-        db_client.write_points(data, database='weather_data', retention_policy='one_year')
+        for city in cities:
+            data = []
+            pollution = get_owm_pollution(city['lat'], city['lon'])
+            if pollution is None:
+                continue
+            tags = {'sensorName': 'OpenWeatherMap' + city['name'],
+                    'sensorLocation': city['name'],
+                    'sensorType': 'Web'}
+            data.append(json_to_influx(pollution, tags))
+            db_client.write_points(data, database='weather_data', retention_policy='one_year')
 
-        for d in data:
-                topic = MQTT_TOPIC + '/' + d['measurement'] + '/' + d['tags']['sensorName']
-                mq.send(topic, json.dumps(d))
+            for d in data:
+                    topic = MQTT_TOPIC + '/' + d['measurement'] + '/' + d['tags']['sensorName']
+                    mq.send(topic, json.dumps(d))
 
-        print(data)
+            print(data)
+            time.sleep(5)
         time.sleep(1800)
 
 if __name__ == '__main__':

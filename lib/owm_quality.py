@@ -13,8 +13,11 @@ class OwmPollution:
     def __init__(self):
         self.URI = URI
 
-    def get_air_quality(self):
+    def get_air_quality(self, lat=None, lon=None):
+        if lat and lon:
+            self.URI = self.build_uri(lat, lon)
         try:
+            print(self.URI)
             response = requests.get(self.URI)
         except:
             print("Error in request")
@@ -26,6 +29,10 @@ class OwmPollution:
             print("Error requesting data")
             print(response.text)
             return None
+
+    def build_uri(self, lat, lon):
+        return URL + '?' + 'lat=' + lat + '&lon=' + lon + '&appid=' + KEY
+
 
 if __name__ == '__main__':
     owm = OwmPollution()
