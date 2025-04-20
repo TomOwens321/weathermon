@@ -16,8 +16,9 @@ mq = Mqtt('rpi4b-1.ourhouse')
 # list of lat/lon pairs for the cities
 cities = [
     {'lat': '40.242151', 'lon': '-104.773687', 'name': 'Platteville'}, # Platteville
-    {'lat': '32.778481', 'lon': '-108.273811', 'name': 'Silver City'},  # Silver City
-    {'lat': '38.453327', 'lon': '-105.240667', 'name': 'Canyon City'}   # Canyon City
+    {'lat': '32.778481', 'lon': '-108.273811', 'name': 'Silver City'}, # Silver City
+    {'lat': '38.453327', 'lon': '-105.240667', 'name': 'Canyon City'}, # Canyon City
+    {'lat': '31.566123', 'lon': '-110.274302', 'name': 'Sierra Vista'} # Sierra Vista
 ]
 
 def get_owm_pollution(lat, lon):
