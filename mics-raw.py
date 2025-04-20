@@ -59,7 +59,7 @@ if __name__ == '__main__':
                 'no2_raw': int(sum(no2s) / len(no2s)),
                 'nh3_raw': int(sum(nh3s) / len(nh3s)),
                 'o3_raw': int(sum(o3s) / len(o3s)),
-                'no2': round(coPPM(sum(o3s) / len(o3s)), 2),
+                'no2': round(no2PPM(sum(no2s) / len(no2s)), 2),
                 'nh3': round(nh3PPM(sum(nh3s) / len(nh3s)), 2),
                 'co': round(coPPM(sum(o3s) / len(o3s)), 2),
             }
