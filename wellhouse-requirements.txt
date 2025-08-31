@@ -19,7 +19,7 @@ pyserial==3.5
 python-dateutil==2.9.0.post0
 pytz==2024.1
 pyusb==1.2.1
-requests==2.31.0
+requests==2.32.4
 rpi-lgpio==0.4
 rpi_ws281x==5.0.0
 six==1.16.0
