@@ -20,6 +20,7 @@ RPi.GPIO==0.7.0
 six==1.15.0
 smbus==1.1.post2
 spidev==3.5
+tinytuya==1.17.4
 toml==0.10.1
 typed-ast==1.4.1
 spidev==3.5
