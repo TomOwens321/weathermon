@@ -16,7 +16,7 @@ db_client = db.client()
 def get_pressure(sensor):
     reading = {}
     pr = sensor.pressure()
-    adjusted_pr = conv.adjust_for_altitude(pr, 4870)
+    adjusted_pr = conv.adjust_for_altitude(pr, 4925)
 
     reading['measurement'] = 'barometer'
     reading['tags'] = {'sensorType': 'LPS22HB', 'sensorLocation': 'Wellhouse', 'sensorName': 'WH Pressure'}

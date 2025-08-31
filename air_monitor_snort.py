@@ -6,7 +6,7 @@ Use 'python3 -m tinytuya wizard' to get the devices information
 import time
 import json
 import tinytuya
-from datetime import datetime
+from datetime import datetime, timezone
 from lib.mqtt import Mqtt
 from lib.influxdb import Influxdb
 import lib.conversions as conv
@@ -43,8 +43,8 @@ def get_readings(device):
     # Get the Air Quality reading
     reading = {}
     reading['measurement'] = 'air_quality'
-    reading['time'] = datetime.utcnow().isoformat() + 'Z'
-    reading['tags'] = {'sensorName': 'Sniff', 'sensorLocation': 'Kitchen', 'sensorType': 'AirDetector'}
+    reading['time'] = datetime.now(timezone.utc).isoformat()
+    reading['tags'] = {'sensorName': 'Snort', 'sensorLocation': 'Blueroom', 'sensorType': 'AirDetector'}
     reading['fields'] = {
         'co2': float(sensor_data['dps']['2']),
         'pm2_5': float(sensor_data['dps']['20']),
@@ -58,8 +58,8 @@ def get_readings(device):
     # Get the CO2 reading
     reading = {}
     reading['measurement'] = 'co2'
-    reading['time'] = datetime.utcnow().isoformat() + 'Z'
-    reading['tags'] = {'sensorName': 'Sniff', 'sensorLocation': 'Kitchen', 'sensorType': 'AirDetector'}
+    reading['time'] = datetime.now(timezone.utc).isoformat()
+    reading['tags'] = {'sensorName': 'Snort', 'sensorLocation': 'Blueroom', 'sensorType': 'AirDetector'}
     reading['fields'] = {
         'carbon_dioxide': float(sensor_data['dps']['2'])
     }
@@ -68,8 +68,8 @@ def get_readings(device):
     # Get the VOC reading
     reading = {}
     reading['measurement'] = 'voc'
-    reading['time'] = datetime.utcnow().isoformat() + 'Z'
-    reading['tags'] = {'sensorName': 'Sniff', 'sensorLocation': 'Kitchen', 'sensorType': 'AirDetector'}
+    reading['time'] = datetime.now(timezone.utc).isoformat()
+    reading['tags'] = {'sensorName': 'Snort', 'sensorLocation': 'Blueroom', 'sensorType': 'AirDetector'}
     reading['fields'] = {
         'voc': float(sensor_data['dps']['21'])
     }
@@ -78,8 +78,8 @@ def get_readings(device):
     # Get the CH2O reading
     reading = {}
     reading['measurement'] = 'hcho'
-    reading['time'] = datetime.utcnow().isoformat() + 'Z'
-    reading['tags'] = {'sensorName': 'Sniff', 'sensorLocation': 'Kitchen', 'sensorType': 'AirDetector'}
+    reading['time'] = datetime.now(timezone.utc).isoformat()
+    reading['tags'] = {'sensorName': 'Snort', 'sensorLocation': 'Blueroom', 'sensorType': 'AirDetector'}
     reading['fields'] = {
         'formaldehyde': sensor_data['dps']['22']
     }
@@ -88,8 +88,8 @@ def get_readings(device):
     # Get the temperature reading
     reading = {}
     reading['measurement'] = 'temperature'
-    reading['time'] = datetime.utcnow().isoformat() + 'Z'
-    reading['tags'] = {'sensorName': 'Sniff', 'sensorLocation': 'Kitchen', 'sensorType': 'AirDetector'}
+    reading['time'] = datetime.now(timezone.utc).isoformat()
+    reading['tags'] = {'sensorName': 'Snort', 'sensorLocation': 'Blueroom', 'sensorType': 'AirDetector'}
     reading['fields'] = {
         'tempc': float(sensor_data['dps']['18']),
         'tempf': float(conv.c_to_f(sensor_data['dps']['18']))
@@ -99,8 +99,8 @@ def get_readings(device):
     # Get the humidity reading
     reading = {}
     reading['measurement'] = 'humidity'
-    reading['time'] = datetime.utcnow().isoformat() + 'Z'
-    reading['tags'] = {'sensorName': 'Sniff', 'sensorLocation': 'Kitchen', 'sensorType': 'AirDetector'}
+    reading['time'] = datetime.now(timezone.utc).isoformat()
+    reading['tags'] = {'sensorName': 'Snort', 'sensorLocation': 'Blueroom', 'sensorType': 'AirDetector'}
     reading['fields'] = {
         'humidity': float(sensor_data['dps']['19'])
     }
@@ -111,14 +111,13 @@ def get_readings(device):
 def _get_air_detector_device():
     # Scans the network for devices
     devs = tinytuya.deviceScan()
-    dev = [d for d in devs.values() if d['name'] == 'Sniff'][0]
-    print(dev)
+    dev = [d for d in devs.values() if d['name'] == 'Snort'][0]
     # air_mon = tinytuya.Device(dev['id'])
     air_mon = tinytuya.Device(dev_id=dev['id'],
                               address=dev['ip'],
                               local_key=dev['key'],
                               version=dev['version'])
-    air_mon.set_version(3.3)
+    air_mon.set_version(dev['version'])
     air_mon.set_socketPersistent(False)
     return air_mon
 
