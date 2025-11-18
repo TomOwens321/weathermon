@@ -18,7 +18,8 @@ cities = [
     {'lat': '40.242151', 'lon': '-104.773687', 'name': 'Platteville'},    # Platteville
     {'lat': '39.070000', 'lon': '-108.564300', 'name': 'Grand Junction'}, # Grand Junction
     {'lat': '38.453327', 'lon': '-105.240667', 'name': 'Canyon City'},    # Canyon City
-    {'lat': '40.400000', 'lon': '-105.070000', 'name': 'Loveland'}        # Loveland
+    {'lat': '40.400000', 'lon': '-105.070000', 'name': 'Loveland'},       # Loveland
+    {'lat': '37.103270', 'lon': '-113.577031', 'name': 'Saint George'}    # Saint George
 ]
 
 def get_owm_pollution(lat, lon):
