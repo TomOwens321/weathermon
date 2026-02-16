@@ -16,10 +16,10 @@ mq = Mqtt('rpi4b-1.ourhouse')
 # list of lat/lon pairs for the cities
 cities = [
     {'lat': '40.242151', 'lon': '-104.773687', 'name': 'Platteville'},    # Platteville
-    {'lat': '39.070000', 'lon': '-108.564300', 'name': 'Grand Junction'}, # Grand Junction
+    {'lat': '33.970750', 'lon': '-112.729694', 'name': 'Wickenburg'},     # Wickenburg
     {'lat': '38.453327', 'lon': '-105.240667', 'name': 'Canyon City'},    # Canyon City
-    {'lat': '40.400000', 'lon': '-105.070000', 'name': 'Loveland'},       # Loveland
-    {'lat': '37.103270', 'lon': '-113.577031', 'name': 'Saint George'}    # Saint George
+    {'lat': '34.231506', 'lon': '-111.324842', 'name': 'Payson'},         # Payson
+    {'lat': '40.250365', 'lon': '-103.800046', 'name': 'Fort Morgan'}     # Fort Morgan
 ]
 
 def get_owm_pollution(lat, lon):
