@@ -7,10 +7,10 @@ class Mqtt(object):
         self.host = host
         self.client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id, protocol=5)
 
-    def send(self, topic, payload):
+    def send(self, topic, payload, retain=False):
         try:
             self.client.connect(self.host)
-            self.client.publish(topic, payload)
+            self.client.publish(topic, payload, retain=retain)
             self.client.disconnect()
         except:
             print("MQTT connection error with {}".format(self.host))
