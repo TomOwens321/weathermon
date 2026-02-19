@@ -23,7 +23,7 @@ class OwmPollution:
             print("Error in request")
             return None
         if response.status_code == 200:
-            # print(response.json())
+            print(response.json())
             return response.json()
         else:
             print("Error requesting data")
