@@ -96,7 +96,7 @@ def main():
                 mq.send(MQTT_TOPIC, json.dumps({'city': city['name'], 'weather': weather_data}), retain=True)
             except Exception as e:
                 print(f"Error publishing weather data for {city['name']} to MQTT: {e}")
-        time.sleep(1800)  # Sleep for 30 minutes
+        time.sleep(600)  # Sleep for 10 minutes
 
 if __name__ == "__main__":
     main()
