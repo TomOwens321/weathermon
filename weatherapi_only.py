@@ -37,6 +37,8 @@ def json_to_influx(data, city_name):
         'wind_mph': float(data['current']['wind_mph']),
         'wind_kph': float(data['current']['wind_kph']),
         'wind_degree': int(data['current']['wind_degree']),
+        'windchill_c': float(data['current']['windchill_c']),
+        'windchill_f': float(data['current']['windchill_f']),
         'wind_dir': data['current']['wind_dir'],
         'pressure_mb': float(data['current']['pressure_mb']),
         'pressure_in': float(data['current']['pressure_in']),
