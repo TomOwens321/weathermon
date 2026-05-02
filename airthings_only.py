@@ -21,11 +21,15 @@ def get_readings(device):
 
     try:
         device.connect()
-        sensor_data = device.read()
-        device.disconnect()
     except:
+        device.disconnect()
         return False
 
+    sensor_data = device.read()
+    if sensor_data == None:
+        device.disconnect()
+        return False
+    device.disconnect()
     print(sensor_data.sensor_data)
 
     # Get the humidity reading from AirThings
@@ -126,7 +130,7 @@ def run():
 
                 print(d)
 
-        time.sleep(180)
+        time.sleep(600)
 
 if __name__ == '__main__':
     run()

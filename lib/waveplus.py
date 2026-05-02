@@ -96,7 +96,12 @@ class WavePlus():
         if (self.curr_val_char is None):
             print("ERROR: Devices are not connected.")
             return None            
-        rawdata = self.curr_val_char.read()
+        try:
+            rawdata = self.curr_val_char.read()
+        except:
+            print("Error in read.")
+            self.disconnect()
+            return None
         rawdata = struct.unpack('<BBBBHHHHHHHH', rawdata)
         sensors = Sensors()
         sensors.set(rawdata)
