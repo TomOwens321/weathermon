@@ -56,14 +56,14 @@ def get_readings(device):
     data.append(reading)
 
     # Get the CO2 reading
-    reading = {}
-    reading['measurement'] = 'co2'
-    reading['time'] = datetime.utcnow().isoformat() + 'Z'
-    reading['tags'] = {'sensorName': 'Sniff', 'sensorLocation': 'Kitchen', 'sensorType': 'AirDetector'}
-    reading['fields'] = {
-        'carbon_dioxide': float(sensor_data['dps']['2'])
-    }
-    data.append(reading)
+    #reading = {}
+    #reading['measurement'] = 'co2'
+    #reading['time'] = datetime.utcnow().isoformat() + 'Z'
+    #reading['tags'] = {'sensorName': 'Sniff', 'sensorLocation': 'Kitchen', 'sensorType': 'AirDetector'}
+    #reading['fields'] = {
+    #    'carbon_dioxide': float(sensor_data['dps']['2'])
+    #}
+    #data.append(reading)
 
     # Get the VOC reading
     reading = {}
