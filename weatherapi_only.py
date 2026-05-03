@@ -15,7 +15,7 @@ mq = Mqtt('rpi4b-1.ourhouse')
 MQTT_TOPIC = 'sun-chaser/weather'
 
 cities = [
-    {'name': 'Boulder, CO',     'location': '80301'},
+    {'name': 'Socorro, NM',     'location': 'Socorro, NM'},
     {'name': 'Platteville, CO', 'location': 'Platteville, CO'},
     {'name': 'Wickenburg, AZ',  'location': 'Wickenburg, AZ'},
     {'name': 'Canon City, CO',  'location': 'Canon City, CO'},
@@ -64,14 +64,7 @@ def json_to_influx(data, city_name):
         'pm2_5': float(data['current']['air_quality']['pm2_5']),
         'pm10': float(data['current']['air_quality']['pm10']),
         'us-epa-index': int(data['current']['air_quality']['us-epa-index']),
-        'gb-defra-index': int(data['current']['air_quality']['gb-defra-index']),
-        'hazel': float(data['current']['pollen']['Hazel']),
-        'alder': float(data['current']['pollen']['Alder']),
-        'birch': float(data['current']['pollen']['Birch']),
-        'oak': float(data['current']['pollen']['Oak']),
-        'grass': float(data['current']['pollen']['Grass']),
-        'mugwort': float(data['current']['pollen']['Mugwort']),
-        'ragweed': float(data['current']['pollen']['Ragweed'])
+        'gb-defra-index': int(data['current']['air_quality']['gb-defra-index'])
     }
     return reading
 

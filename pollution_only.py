@@ -16,9 +16,9 @@ mq = Mqtt('rpi4b-1.ourhouse')
 # list of lat/lon pairs for the cities
 cities = [
     {'lat': '40.242151', 'lon': '-104.773687', 'name': 'Platteville'},    # Platteville
-    {'lat': '33.970750', 'lon': '-112.729694', 'name': 'Wickenburg'},     # Wickenburg
+    {'lat': '41.138955', 'lon': '-100.788955', 'name': 'North Platte'},   # North Platte
     {'lat': '38.453327', 'lon': '-105.240667', 'name': 'Canyon City'},    # Canyon City
-    {'lat': '34.231506', 'lon': '-111.324842', 'name': 'Payson'},         # Payson
+    {'lat': '40.704235', 'lon': '-105.008362', 'name': 'Wellington'},     # Wellington
     {'lat': '40.250365', 'lon': '-103.800046', 'name': 'Fort Morgan'}     # Fort Morgan
 ]
 
