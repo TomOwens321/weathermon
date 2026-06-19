@@ -11,6 +11,7 @@ class Mqtt(object):
         try:
             self.client.connect(self.host)
             self.client.publish(topic, payload, retain=retain)
-            self.client.disconnect()
         except:
             print("MQTT connection error with {}".format(self.host))
+        finally:
+            self.client.disconnect()
