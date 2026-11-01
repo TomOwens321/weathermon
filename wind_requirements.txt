@@ -10,5 +10,5 @@ requests==2.32.4
 RPi.GPIO==0.7.1
 six==1.16.0
 smbus==1.1.post2
-urllib3==2.5.0
+urllib3==2.6.3
 wrapt==1.12.1
