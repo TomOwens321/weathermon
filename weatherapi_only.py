@@ -18,7 +18,7 @@ cities = [
     {'name': 'Socorro, NM',     'location': 'Socorro, NM'},
     {'name': 'Platteville, CO', 'location': 'Platteville, CO'},
     {'name': 'Wickenburg, AZ',  'location': 'Wickenburg, AZ'},
-    {'name': 'Canon City, CO',  'location': 'Canon City, CO'},
+    {'name': 'Timnath, CO',     'location': 'Timnath, CO'},
     {'name': 'Fort Morgan, CO', 'location': 'Fort Morgan, CO'},
     {'name': 'Las Cruces, NM',  'location': 'Las Cruces, NM'}
 ]
