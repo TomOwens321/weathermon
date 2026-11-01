@@ -12,7 +12,7 @@ charset-normalizer==3.3.2
 idna==3.7
 influxdb==5.3.1
 lgpio==0.2.2.0
-msgpack==1.0.8
+msgpack==1.2.3
 paho-mqtt==2.0.0
 pyftdi==0.55.0
 pyserial==3.5
