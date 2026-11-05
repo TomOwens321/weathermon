@@ -12,15 +12,15 @@ db = Influxdb(host='knode.ourhouse', port='8086')
 db_client = db.client()
 
 mq = Mqtt('rpi4b-1.ourhouse')
-MQTT_TOPIC = 'sun-chaser/weather'
+MQTT_TOPIC = 'sun-chaser/weather/weatherapi'
 
 cities = [
-    {'name': 'Socorro, NM',     'location': 'Socorro, NM'},
-    {'name': 'Platteville, CO', 'location': 'Platteville, CO'},
-    {'name': 'Wickenburg, AZ',  'location': 'Wickenburg, AZ'},
-    {'name': 'Timnath, CO',     'location': 'Timnath, CO'},
-    {'name': 'Fort Morgan, CO', 'location': 'Fort Morgan, CO'},
-    {'name': 'Las Cruces, NM',  'location': 'Las Cruces, NM'}
+    {'name': 'Socorro',     'location': 'Socorro, NM'},
+    {'name': 'Platteville', 'location': 'Platteville, CO'},
+    {'name': 'Wickenburg',  'location': 'Wickenburg, AZ'},
+    {'name': 'Timnath',     'location': 'Timnath, CO'},
+    {'name': 'Fort Morgan', 'location': 'Fort Morgan, CO'},
+    {'name': 'Las Cruces',  'location': 'Las Cruces, NM'}
 ]
 
 def json_to_influx(data, city_name):
@@ -88,7 +88,7 @@ def main():
                 print(f"Error writing weather data for {city['name']} to InfluxDB: {e}")
 
             try:
-                mq.send(MQTT_TOPIC, json.dumps({'city': city['name'], 'weather': weather_data}), retain=True)
+                mq.send(MQTT_TOPIC + "/" + city['name'], json.dumps({'city': city['location'], 'weather': weather_data}), retain=True)
             except Exception as e:
                 print(f"Error publishing weather data for {city['name']} to MQTT: {e}")
         time.sleep(600)  # Sleep for 10 minutes
